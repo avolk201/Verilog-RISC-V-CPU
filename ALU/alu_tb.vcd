@@ -1,0 +1,117 @@
+$date
+	Thu May 15 14:24:07 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module tb_alu $end
+$var wire 1 ! zero $end
+$var wire 16 " result [15:0] $end
+$var parameter 32 # WIDTH $end
+$var reg 16 $ a [15:0] $end
+$var reg 2 % alu_op [1:0] $end
+$var reg 16 & b [15:0] $end
+$var integer 32 ' i [31:0] $end
+$scope module DUT $end
+$var wire 16 ( a [15:0] $end
+$var wire 2 ) alu_op [1:0] $end
+$var wire 16 * b [15:0] $end
+$var wire 1 ! zero $end
+$var parameter 32 + WIDTH $end
+$var reg 16 , result [15:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b10000 +
+b10000 #
+$end
+#0
+$dumpvars
+b10 ,
+b1 *
+b0 )
+b1 (
+b0 '
+b1 &
+b0 %
+b1 $
+b10 "
+0!
+$end
+#5000
+b110 "
+b110 ,
+b1 %
+b1 )
+b11 &
+b11 *
+b101 $
+b101 (
+b1 '
+#10000
+b1 "
+b1 ,
+b10 %
+b10 )
+b1 &
+b1 *
+b11111111 $
+b11111111 (
+b10 '
+#15000
+b111 "
+b111 ,
+b11 %
+b11 )
+b11 &
+b11 *
+b1010 $
+b1010 (
+b11 '
+#20000
+1!
+b0 "
+b0 ,
+b1000 &
+b1000 *
+b1000 $
+b1000 (
+b100 '
+#25000
+0!
+b101010101010101 "
+b101010101010101 ,
+b0 %
+b0 )
+b100001100100001 &
+b100001100100001 *
+b1001000110100 $
+b1001000110100 (
+b101 '
+#30000
+b1111111111111111 "
+b1111111111111111 ,
+b1 %
+b1 )
+b0 &
+b0 *
+b1111111111111111 $
+b1111111111111111 (
+b110 '
+#35000
+b10000 "
+b10000 ,
+b10 %
+b10 )
+b10000 &
+b10000 *
+b1010101111001101 $
+b1010101111001101 (
+b111 '
+#40000
+b1000 '
