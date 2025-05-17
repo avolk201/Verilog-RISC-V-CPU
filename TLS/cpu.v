@@ -53,6 +53,92 @@ if_id #(
     .id_instr(if_id_instr)
 );
 
+// ---------- ID Stage Signals ----------
+// Instruction decoding
+wire [2:0] id_opcode = if_id_instr[11:9];   // bits [11:9]
+wire [2:0] id_rd     = if_id_instr[ 8:6];   // bits [8:6]
+wire [2:0] id_rs     = if_id_instr[ 5:3];   // bits [5:3] (R‑type Rs)
+wire [2:0] id_rt     = if_id_instr[ 2:0];   // bits [2:0] (R‑type Rt)
+
+// Immediate generation
+wire [5:0] id_imm6   = if_id_instr[5:0];   // 6-bit immediate field
+wire [DATA_WIDTH-1:0] id_imm_ext;          // Sign-extended immediate
+imm_gen #(
+    .IN_WIDTH(6),
+    .OUT_WIDTH(DATA_WIDTH)
+) IMM_GEN (
+    .imm_in  (id_imm6),
+    .imm_out (id_imm_ext)
+);
+
+// Control unit
+wire reg_write, alu_src, mem_read, mem_write, branch;
+wire [2:0] alu_op;
+control CONTROL (
+    .opcode   (id_opcode),
+    .reg_write(reg_write),
+    .alu_src  (alu_src),
+    .mem_read (mem_read),
+    .mem_write(mem_write),
+    .branch   (branch),
+    .alu_op   (alu_op)
+);
+
+// Register file
+wire [DATA_WIDTH-1:0] reg_data1, reg_data2;
+regfile #(
+    .DATA_WIDTH(DATA_WIDTH),
+    .ADDR_WIDTH(REGADDR_W)
+) REGFILE (
+    .clk        (clk),
+    .reset      (reset),
+    .read_reg1  (id_rs),
+    .read_reg2  (id_rt),
+    .write_reg  (id_rd),
+    .write_data (/* from WB stage */),
+    .reg_write  (reg_write),
+    .read_data1 (reg_data1),
+    .read_data2 (reg_data2)
+);
+
+// ---------- ID/EX Pipeline Register ----------
+wire id_ex_reg_write, id_ex_alu_src, id_ex_mem_read, id_ex_mem_write, id_ex_branch;
+wire [2:0] id_ex_alu_op;
+wire [DATA_WIDTH-1:0] id_ex_reg_data1, id_ex_reg_data2, id_ex_imm_ext;
+wire [2:0] id_ex_rs, id_ex_rt, id_ex_rd;
+
+id_ex #(
+    .DATA_WIDTH(DATA_WIDTH),
+    .REGADDR_W(REGADDR_W)
+) ID_EX (
+    .clk        (clk),
+    .reset      (reset),
+    .reg_write_in(reg_write),
+    .alu_src_in (alu_src),
+    .mem_read_in(mem_read),
+    .mem_write_in(mem_write),
+    .branch_in  (branch),
+    .alu_op_in  (alu_op),
+    .reg_data1_in(reg_data1),
+    .reg_data2_in(reg_data2),
+    .imm_ext_in (id_imm_ext),
+    .rs_in      (id_rs),
+    .rt_in      (id_rt),
+    .rd_in      (id_rd),
+    .reg_write_out(id_ex_reg_write),
+    .alu_src_out(id_ex_alu_src),
+    .mem_read_out(id_ex_mem_read),
+    .mem_write_out(id_ex_mem_write),
+    .branch_out (id_ex_branch),
+    .alu_op_out (id_ex_alu_op),
+    .reg_data1_out(id_ex_reg_data1),
+    .reg_data2_out(id_ex_reg_data2),
+    .imm_ext_out(id_ex_imm_ext),
+    .rs_out     (id_ex_rs),
+    .rt_out     (id_ex_rt),
+    .rd_out     (id_ex_rd)
+);
+
 // TODO: instantiate ID stage (control, regfile, imm_gen)
 // TODO: instantiate ID/EX reg
 // TODO: instantiate EX stage (forwarding, ALU)
