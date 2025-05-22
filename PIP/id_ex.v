@@ -3,55 +3,68 @@
 // Pipeline register between ID and EX stages
 //----------------------------------------------------------------------------
 module id_ex #(
-    parameter PC_WIDTH    = 12,
-    parameter DATA_WIDTH  = 16,
+    parameter PC_WIDTH     = 12,
+    parameter DATA_WIDTH   = 16,
     parameter REGADDR_WIDTH = 3
 ) (
-    input                   clk,
-    input                   reset,
-    input                   flush,
+    input                           clk,
+    input                           reset,
+    input                           flush,
     // control inputs from ID
-    input                   id_reg_write,
-    input                   id_mem_read,
-    input                   id_mem_write,
-    input  [1:0]            id_alu_op,
-    input                   id_alu_src,
-    input                   id_branch,
+    input                           id_reg_write,
+    input                           id_mem_read,
+    input                           id_mem_write,
+    input       [1:0]               id_alu_op,
+    input                           id_alu_src,
+    input                           id_branch,
     // data inputs from ID
-    input  [PC_WIDTH-1:0]       id_pc,
-    input  [DATA_WIDTH-1:0]     id_read_data1,
-    input  [DATA_WIDTH-1:0]     id_read_data2,
-    input  [DATA_WIDTH-1:0]     id_imm,
-    input  [REGADDR_WIDTH-1:0]  id_rs,
-    input  [REGADDR_WIDTH-1:0]  id_rt,
-    input  [REGADDR_WIDTH-1:0]  id_rd,
+    input  [PC_WIDTH-1:0]           id_pc,
+    input  [DATA_WIDTH-1:0]         id_read_data1,
+    input  [DATA_WIDTH-1:0]         id_read_data2,
+    input  [DATA_WIDTH-1:0]         id_imm,
+    input  [REGADDR_WIDTH-1:0]      id_rs,
+    input  [REGADDR_WIDTH-1:0]      id_rt,
+    input  [REGADDR_WIDTH-1:0]      id_rd,
     // outputs to EX
-    output reg              ex_reg_write,
-    output reg              ex_mem_read,
-    output reg              ex_mem_write,
-    output reg [1:0]        ex_alu_op,
-    output reg              ex_alu_src,
-    output reg              ex_branch,
-    output reg [PC_WIDTH-1:0]       ex_pc,
-    output reg [DATA_WIDTH-1:0]     ex_read_data1,
-    output reg [DATA_WIDTH-1:0]     ex_read_data2,
-    output reg [DATA_WIDTH-1:0]     ex_imm,
-    output reg [REGADDR_WIDTH-1:0]  ex_rs,
-    output reg [REGADDR_WIDTH-1:0]  ex_rt,
-    output reg [REGADDR_WIDTH-1:0]  ex_rd
+    output reg                     ex_reg_write,
+    output reg                     ex_mem_read,
+    output reg                     ex_mem_write,
+    output reg [1:0]               ex_alu_op,
+    output reg                     ex_alu_src,
+    output reg                     ex_branch,
+    output reg [PC_WIDTH-1:0]      ex_pc,
+    output reg [DATA_WIDTH-1:0]    ex_read_data1,
+    output reg [DATA_WIDTH-1:0]    ex_read_data2,
+    output reg [DATA_WIDTH-1:0]    ex_imm,
+    output reg [REGADDR_WIDTH-1:0] ex_rs,
+    output reg [REGADDR_WIDTH-1:0] ex_rt,
+    output reg [REGADDR_WIDTH-1:0] ex_rd
 );
+
     always @(posedge clk or posedge reset) begin
-        if (reset || flush) begin
-            { ex_reg_write, ex_mem_read, ex_mem_write,
-              ex_alu_op, ex_alu_src, ex_branch } <= 0;
-            ex_pc           <= 0;
-            ex_read_data1   <= 0;
-            ex_read_data2   <= 0;
-            ex_imm          <= 0;
-            ex_rs           <= 0;
-            ex_rt           <= 0;
-            ex_rd           <= 0;
+        if (reset) begin
+            { ex_reg_write, ex_mem_read, ex_mem_write, ex_alu_src, ex_branch } <= 0;
+            ex_alu_op   <= 0;
+            ex_pc       <= 0;
+            ex_read_data1 <= 0;
+            ex_read_data2 <= 0;
+            ex_imm      <= 0;
+            ex_rs       <= 0;
+            ex_rt       <= 0;
+            ex_rd       <= 0;
+        end else if (flush) begin
+            // on a pipeline flush, clear all controls
+            { ex_reg_write, ex_mem_read, ex_mem_write, ex_alu_src, ex_branch } <= 0;
+            ex_alu_op   <= 0;
+            ex_pc       <= 0;
+            ex_read_data1 <= 0;
+            ex_read_data2 <= 0;
+            ex_imm      <= 0;
+            ex_rs       <= 0;
+            ex_rt       <= 0;
+            ex_rd       <= 0;
         end else begin
+            // normal operation: pass ID inputs through
             ex_reg_write   <= id_reg_write;
             ex_mem_read    <= id_mem_read;
             ex_mem_write   <= id_mem_write;
@@ -67,4 +80,5 @@ module id_ex #(
             ex_rd          <= id_rd;
         end
     end
+
 endmodule

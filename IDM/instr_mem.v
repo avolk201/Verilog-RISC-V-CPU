@@ -1,30 +1,29 @@
+`timescale 1ns/1ps
+
 //----------------------------------------------------------------------------
 // Module: instr_mem.v
 // Description: Instruction Memory
 //----------------------------------------------------------------------------
 
 module instr_mem #(
-    parameter ADDR_WIDTH = 9,  // Address width (log2 of memory depth)
-    parameter DATA_WIDTH = 12  // Instruction width
+    parameter ADDR_WIDTH = 8,          // = $clog2(IMEM_DEPTH)
+    parameter DATA_WIDTH = 12,         // instruction width
+    parameter MEMFILE    = "instr_init.hex"
 ) (
-    input  [ADDR_WIDTH-1:0] addr,  // Address from PC
-    output [DATA_WIDTH-1:0] instr  // Instruction output
+    input  [ADDR_WIDTH-1:0] addr,
+    output [DATA_WIDTH-1:0] instr
 );
 
-    // Memory array to store instructions
-    reg [DATA_WIDTH-1:0] memory [0:(1<<ADDR_WIDTH)-1];
+    // real memory array
+    reg [DATA_WIDTH-1:0] mem [0:(1<<ADDR_WIDTH)-1];
 
-    // Initialize memory with instructions (optional)
+    // preload from hex file (no “//…” comments in the .hex!)
     initial begin
-        // Example: Preload some instructions
-        memory[0] = 12'b000_001_000001; // load R1, 1
-        memory[1] = 12'b010_010_001_011; // add R2, R3
-        memory[2] = 12'b101_000000001; // branch if Z
-        // Add more instructions as needed
+        $readmemh(MEMFILE, mem);
     end
 
-    // Read instruction at the given address
-    assign instr = memory[addr];
+    // asynchronous read
+    assign instr = mem[addr];
 
 endmodule
 

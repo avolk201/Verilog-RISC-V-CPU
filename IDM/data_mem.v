@@ -5,7 +5,8 @@
 //----------------------------------------------------------------------------
 module data_mem #(
     parameter ADDR_WIDTH = 4,   // 4-bit address for 16 memory locations
-    parameter DATA_WIDTH = 16   // data bus width
+    parameter DATA_WIDTH = 16,  // data bus width
+    parameter MEMFILE    = "data_init.hex" // memory initialization file
 ) (
     input                       clk,
     input                       mem_read,   // enable read
@@ -18,6 +19,11 @@ module data_mem #(
     // Memory array
     reg [DATA_WIDTH-1:0] memory [0:(1<<ADDR_WIDTH)-1];
 
+    // Preload memory
+    initial begin
+        $readmemh(MEMFILE, memory);
+    end
+
     // Synchronous write
     always @(posedge clk) begin
         if (mem_write) begin
@@ -26,6 +32,6 @@ module data_mem #(
     end
 
     // Asynchronous read
-    assign read_data = (mem_read) ? memory[addr] : {DATA_WIDTH{1'b0}};
+    assign read_data = (mem_read) ? memory[addr] : {DATA_WIDTH{1'bz}};
 
 endmodule
