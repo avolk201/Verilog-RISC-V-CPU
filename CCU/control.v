@@ -44,6 +44,16 @@ module control (
         alu_op    = 2'b01;  // XOR
       end
 
+      3'b100: begin          // STR  (store)
+        // compute address = Rs + imm
+        mem_write = 1;
+        alu_src   = 1;       // B = imm
+        alu_op    = 2'b00;   // add
+        reg_write = 0;       // no register write
+      end
+
+
+
       default: begin
         // NOP
         reg_write = 0;
