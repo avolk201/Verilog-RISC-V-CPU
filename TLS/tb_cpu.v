@@ -43,7 +43,7 @@ module tb_cpu;
         clk   = 0;
         reset = 1;
         #1       reset = 0;   // deassert *before* first posedge at t=5ns
-        #200;
+        #400;
         $finish;
     end
 
@@ -60,13 +60,7 @@ module tb_cpu;
 
     integer i;
     initial begin
-        #250;
-        $display("final DMEM contents:");
-        for (i = 0; i < 16; i = i + 1)
-            $display("DMEM[%0d] = %0h", i, tb_cpu.DUT.DMEM.memory[i]);
-    end
-    initial begin
-        #250;
+        #450;
         $display("final ID_REGFILE contents:");
         for (i = 0; i < 8; i = i + 1)
             $display("R[%0d] = %0h", i, tb_cpu.DUT.ID_REGFILE.regs[i]);
