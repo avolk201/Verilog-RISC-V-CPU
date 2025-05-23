@@ -14,7 +14,7 @@ module id_ex #(
   input                          id_reg_write,
   input                          id_mem_read,
   input                          id_mem_write,
-  input          [1:0]           id_alu_op,
+  input          [2:0]           id_alu_op,
   input                          id_alu_src,
   input                          id_branch,
   // data
@@ -25,11 +25,13 @@ module id_ex #(
   input   [REGADDR_WIDTH-1:0]    id_rs,
   input   [REGADDR_WIDTH-1:0]    id_rt,
   input   [REGADDR_WIDTH-1:0]    id_rd,
+  input id_is_str_reg_indirect,
+
   // outputs
   output reg                     ex_reg_write,
   output reg                     ex_mem_read,
   output reg                     ex_mem_write,
-  output reg [1:0]               ex_alu_op,
+  output reg [2:0]               ex_alu_op,
   output reg                     ex_alu_src,
   output reg                     ex_branch,
   output reg [PC_WIDTH-1:0]      ex_pc,
@@ -38,6 +40,7 @@ module id_ex #(
   output reg [DATA_WIDTH-1:0]    ex_imm_ext,
   output reg [REGADDR_WIDTH-1:0] ex_rs,
   output reg [REGADDR_WIDTH-1:0] ex_rt,
+  output reg ex_is_str_reg_indirect,
   output reg [REGADDR_WIDTH-1:0] ex_rd
 );
 
@@ -85,6 +88,7 @@ module id_ex #(
       ex_rs         <= id_rs;
       ex_rt         <= id_rt;
       ex_rd         <= id_rd;
+      ex_is_str_reg_indirect <= id_is_str_reg_indirect;
     end
   end
 endmodule

@@ -68,10 +68,13 @@ if_id #(
 
 // ---------- ID Stage Signals ----------
 // Instruction decoding
-wire [2:0] id_opcode = if_id_instr[14:12];   // bits [14:12]
+wire [3:0] id_opcode = if_id_instr[15:12];   // bits [15:12]
 wire [3:0] id_rd     = if_id_instr[11: 8];   // bits [11:8]
 wire [3:0] id_rs     = if_id_instr[ 7: 4];   // bits [7:4] (R‑type Rs)
 wire [3:0] id_rt     = if_id_instr[ 3: 0];   // bits [3:0] (R‑type Rt)
+wire is_str_reg_indirect = (id_opcode == 4'b1001) && (if_id_instr[3:0] == 4'b0001);
+
+
 
 // Immediate generation
 wire [5:0] id_imm6   = if_id_instr[5:0];   // 6-bit immediate field
@@ -86,7 +89,7 @@ imm_gen #(
 
 // Control unit
 wire reg_write, alu_src, mem_read, mem_write, branch;
-wire [1:0] alu_op;
+wire [2:0] alu_op;
 control CONTROL (
     .opcode   (id_opcode),
     .zero     (zero_flag),
@@ -133,7 +136,7 @@ regfile #(
 
 // ---------- ID/EX Pipeline Register ----------
 wire id_ex_reg_write, id_ex_alu_src, id_ex_mem_read, id_ex_mem_write, id_ex_branch;
-wire [1:0] id_ex_alu_op;
+wire [2:0] id_ex_alu_op;
 wire [DATA_WIDTH-1:0] id_ex_reg_data1, id_ex_reg_data2, id_ex_imm_ext;
 wire [3:0] id_ex_rs, id_ex_rt, id_ex_rd;
 wire [WIDTH-1:0] id_ex_pc;
@@ -175,7 +178,9 @@ id_ex #(
     .ex_imm_ext     (id_ex_imm_ext),
     .ex_rs          (id_ex_rs),
     .ex_rt          (id_ex_rt),
-    .ex_rd          (id_ex_rd)
+    .ex_rd          (id_ex_rd),
+    .id_is_str_reg_indirect(is_str_reg_indirect),
+    .ex_is_str_reg_indirect(ex_is_str_reg_indirect)
 );
 
 // … then later, after you’ve declared your ID/EX wires …
@@ -218,10 +223,11 @@ wire [DATA_WIDTH-1:0] ex_forw_B =
       (forwardB == 2'b01) ? wb_write_data  :    // from MEM/WB
                              id_ex_reg_data2;   // from ID/EX
 
-// then pick between reg operand and immediate
-wire [DATA_WIDTH-1:0] alu_in2 = id_ex_alu_src 
-                               ? id_ex_imm_ext 
-                               : ex_forw_B;
+// Fix: use ex_forw_B for store address
+wire [DATA_WIDTH-1:0] str_addr = ex_is_str_reg_indirect ? ex_forw_A : id_ex_imm_ext;
+wire [DATA_WIDTH-1:0] alu_in2 = (id_ex_mem_write && id_ex_alu_op == 2'b10) ? str_addr :
+                                (id_ex_alu_src ? id_ex_imm_ext : ex_forw_B);
+
 
 // 1) EX stage: forwarding muxes + ALU
 // -------------------------------------------------
@@ -267,7 +273,7 @@ ex_mem #(
     // data inputs from ALU and ID/EX
     .ex_pc          (id_ex_pc),
     .ex_alu_result  (ex_alu_result),
-    .ex_reg_data2   (alu_in2_reg),
+    .ex_reg_data2   (ex_forw_A), // <-- value to store (R1)
     .ex_rd          (id_ex_rd),
     // outputs to MEM stage
     .mem_reg_write  (mem_reg_write),

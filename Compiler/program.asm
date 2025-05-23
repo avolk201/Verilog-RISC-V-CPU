@@ -4,6 +4,7 @@
 //   R1 = F[n]
 //   R2 = F[n+1] (temporary next value)
 //   R3 = 0       (constant zero)
+//   R4 = memory address pointer
 //   R5 = loop counter (how many more fibs to do)
 //   R6 = 1
 
@@ -12,12 +13,19 @@
     LDI R1, #1      // F[1] = 1
     LDI R2, #0      // temp
     LDI R3, #0      // zero constant
+    LDI R4, #0      // R4 = memory address pointer
     LDI R5, #9      // only 8 more fib numbers to compute
     LDI R6, #1      // decrement amount
 
 LOOP:
     // compute next = R0 + R1
     ADD  R2, R0, R1
+
+    // store current F[n] (R1) to memory at address R4
+    STR  R1, R4
+
+    // increment address pointer
+    ADD  R4, R4, R6
 
     // shift window
     ADD  R0, R1, R3  // R0 ← old R1

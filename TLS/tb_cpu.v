@@ -2,7 +2,7 @@
 
 module tb_cpu;
     // Parameters
-    parameter WIDTH      = 15;
+    parameter WIDTH      = 16;
     parameter DATA_WIDTH = 16;
 
     // Clock and reset
@@ -73,6 +73,11 @@ module tb_cpu;
         $display("r13: %d", r13);
         $display("r14: %d", r14);
         $display("r15: %d", r15);
+    end
+
+    initial begin
+        #1000;
+        $writememh("data_mem_out.hex", DUT.DMEM.memory);
     end
 
 endmodule

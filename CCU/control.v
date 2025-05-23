@@ -1,10 +1,10 @@
 module control (
-  input  [2:0] opcode,
+  input  [3:0] opcode,
   input        zero,        
   output reg       reg_write,
   output reg       mem_read,
   output reg       mem_write,
-  output reg [1:0] alu_op,
+  output reg [2:0] alu_op,
   output reg       alu_src,
   output reg       branch,   
   output reg       ldpc,
@@ -15,68 +15,66 @@ module control (
     // defaults
     reg_write = 0;  mem_read = 0;  mem_write = 0;
     alu_src   = 0;  branch   = 0;  ldpc      = 0;
-    alu_op    = 2'b00;  // ADD
+    alu_op    = 3'b000;  // ADD
     halt      = 0;    // default: not halted
 
     case(opcode)
-      3'b000: begin
-        // ADD: Rd <- Rs + Rt
-        reg_write = 1;
-        alu_src   = 0;       // B = reg_data2
-        alu_op    = 2'b00;   // ADD
-      end
-
-      3'b010: begin
-        // LDI: Rd <- imm
-        reg_write = 1;
-        alu_src   = 1;       // B = imm
-        alu_op    = 2'b10;   // PASS-B
-      end
-
-      3'b001: begin
-        // SUB: Rd <- Rs - Rt
+      4'b0000: begin // ADD
         reg_write = 1;
         alu_src   = 0;
-        alu_op    = 2'b11;  // SUBTRACTION
+        alu_op    = 3'b000;
       end
 
-      3'b011: begin
-        // XOR: Rd <- Rs ^ Rt
+      4'b0001: begin // SUB
         reg_write = 1;
         alu_src   = 0;
-        alu_op    = 2'b01;  // XOR
+        alu_op    = 3'b011;
       end
 
-      3'b100: begin          // STR  (store)
-        // compute address = Rs + imm
-        mem_write = 1;
-        alu_src   = 1;       // B = imm
-        alu_op    = 2'b00;   // add
-        reg_write = 0;       // no register write
+      4'b0010: begin // LDI
+        reg_write = 1;
+        alu_src   = 1;
+        alu_op    = 3'b010;
       end
 
-      3'b101: begin        // JMP / goto
-        // load PC from immediate
+      4'b0011: begin // XOR
+        reg_write = 1;
+        alu_src   = 0;
+        alu_op    = 3'b001;
+      end
+
+      4'b0100: begin // AND
+        reg_write = 1;
+        alu_src   = 0;
+        alu_op    = 3'b100;
+      end
+
+      4'b0110: begin // JMP
         reg_write = 0;
-        alu_src   = 1;       // B = imm
-        alu_op    = 2'b10;   // PASS-B
-        ldpc      = 1;       // trigger PC ← imm
+        alu_src   = 1;
+        alu_op    = 3'b010;
+        ldpc      = 1;
       end
 
-      3'b110: begin  // HALT
+      4'b0111: begin // HALT
         halt = 1;
       end
 
-      3'b111: begin      // BEQZ imm
-        // compare Rs == 0
-        alu_src   = 0;        // B = reg_data2 (we’ll put R3, the zero register there in the assembler)
-        alu_op    = 2'b11;    // SUB
-        branch    = zero;     // now zero = (Rs - 0)==0
-        ldpc      = zero;     // and on zero take the branch
+      4'b1000: begin // BEQZ
+        alu_src   = 0;
+        alu_op    = 3'b011;
+        branch    = zero;
+        ldpc      = zero;
+      end
+
+      4'b1001: begin // STR
+        mem_write = 1;
+        reg_write = 0;
+        alu_src   = 1; // Use immediate or register as address
+        alu_op    = 3'b010; // pass-through (address)
       end
 
       default: begin
-        // NOP
         reg_write = 0;
       end
     endcase

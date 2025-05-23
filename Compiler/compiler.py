@@ -7,15 +7,21 @@ python3 compiler.py program.asm
 import sys
 import argparse
 
-# opcode mapping (3-bit)
+# opcode mapping (4-bit)
 OPCODES = {
-    'ADD': 0b000,
-    'SUB': 0b001,   # control.v expects SUB=3'b001
-    'XOR': 0b011,   # control.v expects XOR=3'b011
-    'LDI': 0b010,   # control.v expects LDI=3'b010
-    'JMP': 0b101,
-    'HALT': 0b110,    # was CMP
-    'BEQZ': 0b111,   # new
+    'ADD':   0b0000,
+    'SUB':   0b0001,
+    'LDI':   0b0010,
+    'XOR':   0b0011,
+    'AND':   0b0100,
+    'OR':    0b0101,
+    'JMP':   0b0110,
+    'HALT':  0b0111,
+    'BEQZ':  0b1000,
+    'STR':   0b1001,   # <--- add this line
+    # Add more opcodes as needed, up to 16
+    # 'LDR':  0b1010,
+    # etc.
 }
 
 def register_number(tok):
@@ -44,7 +50,7 @@ def assemble_line(line, labels):
         imm = int(parts[2].lstrip('#'), 0)
         # sign-extend to 6 bits
         imm6 = imm & 0x3F
-        # 3b opcode @ [14:12], 4b rd @ [11:8], 6b imm @ [5:0]
+        # 4b opcode @ [15:12], 4b rd @ [11:8], 6b imm @ [5:0]
         word = (OPCODES['LDI'] << 12) | (rd << 8) | imm6
     elif instr == 'JMP':
         if len(parts)!=2:
@@ -56,7 +62,7 @@ def assemble_line(line, labels):
         else:
             target = int(tok.lstrip('#'), 0)
         imm9   = target & 0x1FF
-        # 3b opcode @ [14:12], 9b target @ [8:0]
+        # 4b opcode @ [15:12], 9b target @ [8:0]
         word   = (OPCODES['JMP']<<12) | imm9
     elif instr in ('ADD','SUB','XOR'):
         if len(parts)!=4:
@@ -64,12 +70,32 @@ def assemble_line(line, labels):
         rd = register_number(parts[1])
         rs = register_number(parts[2])
         rt = register_number(parts[3])
-        # 3b opcode @ [14:12], 4b rd @ [11:8], 4b rs @ [7:4], 4b rt @ [3:0]
+        # 4b opcode @ [15:12], 4b rd @ [11:8], 4b rs @ [7:4], 4b rt @ [3:0]
         word = (OPCODES[instr] << 12) | (rd << 8) | (rs << 4) | rt
+    elif instr == 'AND':
+        if len(parts)!=4:
+            raise ValueError(f'AND takes 3 regs: {line}')
+        rd = register_number(parts[1])
+        rs = register_number(parts[2])
+        rt = register_number(parts[3])
+        word = (OPCODES['AND'] << 12) | (rd << 8) | (rs << 4) | rt
+    elif instr == 'STR':
+        if len(parts)!=3:
+            raise ValueError(f'STR takes 2 args: {line}')
+        rs = register_number(parts[1])
+        # Check if second arg is a register or immediate
+        if parts[2].upper().startswith('R'):
+            addr_reg = register_number(parts[2])
+            # 4b opcode [15:12], 4b rs [11:8], 4b addr_reg [7:4], 4b mode [3:0]=1 for reg-indirect
+            word = (OPCODES['STR'] << 12) | (rs << 8) | (addr_reg << 4) | 0x1
+        else:
+            addr = int(parts[2].lstrip('#'), 0)
+            # 4b opcode [15:12], 4b rs [11:8], 8b addr [7:0]
+            word = (OPCODES['STR'] << 12) | (rs << 8) | (addr & 0xFF)
     elif instr == 'HALT':
         if len(parts) != 1:
             raise ValueError(f'HALT takes no args: {line}')
-        # 3b opcode @ [14:12], rest = 0
+        # 4b opcode @ [15:12], rest = 0
         word = (OPCODES['HALT'] << 12)
     elif instr == 'BEQZ':
         if len(parts)!=2:
