@@ -32,8 +32,5 @@ LOOP:
 
     // decrement & maybe finish
     SUB  R5, R5, R6
-    BEQZ END
-    JMP  LOOP
-
-END:
-    HALT
+    BNE LOOP
+HALT

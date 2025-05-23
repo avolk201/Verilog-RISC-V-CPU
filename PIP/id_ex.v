@@ -3,7 +3,7 @@
 // Pipeline register between ID and EX stages
 //----------------------------------------------------------------------------
 module id_ex #(
-  parameter PC_WIDTH       = 15,
+  parameter PC_WIDTH       = 16,
   parameter DATA_WIDTH     = 16,
   parameter REGADDR_WIDTH  = 4
 ) (
@@ -26,6 +26,8 @@ module id_ex #(
   input   [REGADDR_WIDTH-1:0]    id_rt,
   input   [REGADDR_WIDTH-1:0]    id_rd,
   input id_is_str_reg_indirect,
+  input id_is_jal,
+  input [DATA_WIDTH-1:0] id_jal_link_value,
 
   // outputs
   output reg                     ex_reg_write,
@@ -41,7 +43,9 @@ module id_ex #(
   output reg [REGADDR_WIDTH-1:0] ex_rs,
   output reg [REGADDR_WIDTH-1:0] ex_rt,
   output reg ex_is_str_reg_indirect,
-  output reg [REGADDR_WIDTH-1:0] ex_rd
+  output reg [REGADDR_WIDTH-1:0] ex_rd,
+  output reg ex_is_jal,
+  output reg [DATA_WIDTH-1:0] ex_jal_link_value
 );
 
   always @(posedge clk or posedge reset) begin
@@ -59,6 +63,8 @@ module id_ex #(
       ex_rs         <= 0;
       ex_rt         <= 0;
       ex_rd         <= 0;
+      ex_is_jal     <= 0;
+      ex_jal_link_value <= 0;
     end else if (flush) begin
       // squash everything on a bubble
       ex_reg_write  <= 0;
@@ -74,6 +80,8 @@ module id_ex #(
       ex_rs         <= 0;
       ex_rt         <= 0;
       ex_rd         <= 0;
+      ex_is_jal     <= 0;
+      ex_jal_link_value <= 0;
     end else begin
       ex_reg_write  <= id_reg_write;
       ex_mem_read   <= id_mem_read;
@@ -89,6 +97,8 @@ module id_ex #(
       ex_rt         <= id_rt;
       ex_rd         <= id_rd;
       ex_is_str_reg_indirect <= id_is_str_reg_indirect;
+      ex_is_jal <= id_is_jal;
+      ex_jal_link_value <= id_jal_link_value;
     end
   end
 endmodule

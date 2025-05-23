@@ -67,6 +67,13 @@ module control (
         ldpc      = zero;
       end
 
+      4'b1110: begin // BNE
+        alu_src   = 0;
+        alu_op    = 3'b011;   // subtract
+        branch    = ~zero;
+        ldpc      = ~zero;
+      end
+
       4'b1001: begin // STR
         mem_write = 1;
         reg_write = 0;
@@ -87,6 +94,24 @@ module control (
         alu_op    = 3'b010; // Pass-through (B)
       end
 
+      4'b1100: begin // JAL
+        reg_write = 1; // write link register
+        alu_src   = 1;
+        alu_op    = 3'b010;
+        ldpc      = 1;
+      end
+      4'b1101: begin // JR
+        reg_write = 0;
+        alu_src   = 0;
+        alu_op    = 3'b010;
+        ldpc      = 1;
+      end
+
+      4'b1111: begin // MUL
+        reg_write = 1;
+        alu_src   = 0;      // two-register multiply
+        alu_op    = 3'b101; // new ALU code
+      end
       default: begin
         reg_write = 0;
       end

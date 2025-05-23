@@ -5,7 +5,7 @@
 // Top-level pipelined CPU
 //----------------------------------------------------------------------------
 module cpu #(
-    parameter WIDTH       = 15,  // ← was 12
+    parameter WIDTH       = 16,  // ← was 12
     parameter DATA_WIDTH  = 16,  // data path width
     parameter REGADDR_W   = 4,   // ← now 4 bits
     parameter IMEM_DEPTH  = 256,
@@ -24,8 +24,8 @@ wire        stall, pc_write, if_id_write;
 wire        halt;         // NEW from control
 wire        real_pc_write = pc_write & ~halt; // real PC write = normal hazard.pc_write AND NOT halted
 wire        ldpc;                          // from control
-wire        if_id_flush = ldpc;            // flush IF/ID on jump
-wire        id_ex_flush = stall || ldpc;   // flush ID/EX on jump
+wire        if_id_flush = ldpc;  // flush IF/ID on any jump (JMP, JAL, JR, etc.)
+wire        id_ex_flush = stall;           // flush ID/EX only on stall
 
 // real IF/ID write-enable: don’t capture any more instructions once halt is asserted
 wire real_if_id_write = if_id_write & ~halt;
@@ -74,7 +74,15 @@ wire [3:0] id_rs     = if_id_instr[ 7: 4];   // bits [7:4] (R‑type Rs)
 wire [3:0] id_rt     = if_id_instr[ 3: 0];   // bits [3:0] (R‑type Rt)
 wire is_str_reg_indirect = (id_opcode == 4'b1001) && (if_id_instr[3:0] == 4'b0001);
 
+// Add decode for JAL/JR
+wire is_jal = (id_opcode == 4'b1100);
+wire is_jr  = (id_opcode == 4'b1101);
 
+wire [REGADDR_W-1:0] id_jr_reg  = id_rd;             // JR uses rd-field as its src  
+wire [REGADDR_W-1:0] read_reg1  = is_jr ? id_jr_reg : id_rs;  
+
+// For JAL: link register is id_rd, target is id_jump_target
+// For JR: target is id_reg_data1 (rs)
 
 // Immediate generation
 wire [5:0] id_imm6   = if_id_instr[5:0];   // 6-bit immediate field
@@ -116,23 +124,49 @@ wire [DATA_WIDTH-1:0]     wb_read_data, wb_alu_result;
 wire [REGADDR_W-1:0]      wb_rd;
 
 // final write‐back MUX — now available before regfile
-wire [DATA_WIDTH-1:0] wb_write_data = wb_mem_to_reg ? wb_read_data : wb_alu_result;
+wire [DATA_WIDTH-1:0] wb_write_data = (wb_is_jal) ? wb_jal_link_value :
+                                      (wb_mem_to_reg ? wb_read_data : wb_alu_result);
 
 // instantiate register file in ID stage
 regfile #(
-    .DATA_WIDTH     (DATA_WIDTH),
-    .REGADDR_WIDTH  (REGADDR_W)
+  .DATA_WIDTH    (DATA_WIDTH),
+  .REGADDR_WIDTH (REGADDR_W)
 ) ID_REGFILE (
   .clk        (clk),
   .reset      (reset),
   .reg_write  (wb_reg_write),
-  .read_reg1  (id_rs),
+  .read_reg1  (read_reg1),       // ← was id_rs
   .read_reg2  (id_rt),
   .write_reg  (wb_rd),
   .write_data (wb_write_data),
   .read_data1 (id_reg_data1),
   .read_data2 (id_reg_data2)
 );
+
+// Add these wires near your other pipeline wires:
+wire id_is_jal   = (id_opcode == 4'b1100);
+wire [DATA_WIDTH-1:0] id_jal_link_value = if_id_pc + 1;
+wire ex_is_jal, mem_is_jal, wb_is_jal;
+wire [DATA_WIDTH-1:0] ex_jal_link_value, mem_jal_link_value, wb_jal_link_value;
+
+// Add this wire for the forwarded JR target
+wire [DATA_WIDTH-1:0] id_jr_target;
+
+// Forward logic for JR target (ID stage, for id_reg_data1)
+assign id_jr_target = 
+    // Forward from MEM stage if needed (JAL in MEM)
+    (mem_is_jal && (mem_rd == id_rs) && (mem_rd != 0)) ? mem_jal_link_value :
+    // Forward from WB stage if needed (JAL in WB)
+    (wb_is_jal && (wb_rd == id_rs) && (wb_rd != 0)) ? wb_jal_link_value :
+    // Forward from MEM stage if needed (normal ALU)
+    (mem_reg_write && (mem_rd == id_rs) && (mem_rd != 0)) ? mem_alu_result :
+    // Forward from WB stage if needed (normal ALU or load)
+    (wb_reg_write && (wb_rd == id_rs) && (wb_rd != 0)) ? wb_write_data :
+    // Otherwise, use the register file value
+    id_reg_data1;
+
+// Use id_jr_target instead of id_reg_data1 for JR
+wire [WIDTH-1:0] jr_target = id_jr_target[WIDTH-1:0];
 
 // ---------- ID/EX Pipeline Register ----------
 wire id_ex_reg_write, id_ex_alu_src, id_ex_mem_read, id_ex_mem_write, id_ex_branch;
@@ -180,7 +214,11 @@ id_ex #(
     .ex_rt          (id_ex_rt),
     .ex_rd          (id_ex_rd),
     .id_is_str_reg_indirect(is_str_reg_indirect),
-    .ex_is_str_reg_indirect(ex_is_str_reg_indirect)
+    .id_is_jal      (id_is_jal),             // <--- ADD
+    .id_jal_link_value(id_jal_link_value),   // <--- ADD
+    .ex_is_str_reg_indirect(ex_is_str_reg_indirect),
+    .ex_is_jal      (ex_is_jal),             // <--- ADD
+    .ex_jal_link_value(ex_jal_link_value)    // <--- ADD
 );
 
 // … then later, after you’ve declared your ID/EX wires …
@@ -191,8 +229,11 @@ wire [DATA_WIDTH-1:0] reg_data1, reg_data2;
 hazard HAZARD_UNIT (
   .id_ex_mem_read(id_ex_mem_read),
   .id_ex_rd      (id_ex_rd),
+  .ex_rd         (id_ex_rd),        // <-- add this
+  .ex_is_jal     (ex_is_jal),       // <-- add this
   .if_id_rs      (id_rs),
   .if_id_rt      (id_rt),
+  .id_is_jr      (is_jr),           // <-- add this
   .stall         (stall),
   .pc_write      (pc_write),
   .if_id_write   (if_id_write)
@@ -271,11 +312,13 @@ ex_mem #(
     .ex_mem_read    (id_ex_mem_read),
     .ex_mem_write   (id_ex_mem_write),
     .ex_branch      (id_ex_branch),
+    .ex_is_jal      (ex_is_jal),             // <--- ADD
     // data inputs from ALU and ID/EX
     .ex_pc          (id_ex_pc),
     .ex_alu_result  (ex_alu_result),
     .ex_reg_data2   (ex_forw_B), // <-- Correctly forward the value to store
     .ex_rd          (id_ex_rd),
+    .ex_jal_link_value(ex_jal_link_value),   // <--- ADD
     // outputs to MEM stage
     .mem_reg_write  (mem_reg_write),
     .mem_mem_read   (mem_mem_read),
@@ -284,7 +327,9 @@ ex_mem #(
     .mem_pc         (mem_pc),
     .mem_alu_result (mem_alu_result),
     .mem_write_data (mem_write_data), // <-- Pass the forwarded value
-    .mem_rd         (mem_rd)
+    .mem_rd         (mem_rd),
+    .mem_is_jal     (mem_is_jal),            // <--- ADD
+    .mem_jal_link_value(mem_jal_link_value)  // <--- ADD
 );
 
 // … after you’ve declared mem_rd …
@@ -318,21 +363,27 @@ mem_wb #(
     // control inputs from EX/MEM
     .mem_reg_write  (mem_reg_write),
     .mem_mem_read   (mem_mem_read),
+    .mem_is_jal     (mem_is_jal),            // <--- ADD
     // data inputs from MEM stage
     .mem_read_data  (mem_read_data),    // <— and here
     .mem_alu_result (mem_alu_result),
+    .mem_jal_link_value(mem_jal_link_value), // <--- ADD
     .mem_rd         (mem_rd),
     // outputs to WB stage / regfile
     .wb_reg_write   (wb_reg_write),
     .wb_mem_to_reg  (wb_mem_to_reg),
+    .wb_is_jal      (wb_is_jal),             // <--- ADD
     .wb_read_data   (wb_read_data),
     .wb_alu_result  (wb_alu_result),
+    .wb_jal_link_value(wb_jal_link_value),   // <--- ADD
     .wb_rd          (wb_rd)
 );
 
 // PC update logic: either next sequential or a jump
 assign pc_next = ldpc
-                 ? id_jump_target        // jump target
-                 : pc_current + 1;       // normal +1
+    ? (is_jr ? jr_target : id_jump_target)
+    : pc_current + 1;
+
+
 
 endmodule

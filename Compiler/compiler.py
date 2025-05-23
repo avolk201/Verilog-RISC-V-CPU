@@ -19,8 +19,12 @@ OPCODES = {
     'HALT':  0b0111,
     'BEQZ':  0b1000,
     'STR':   0b1001,
-    'LOAD':  0b1010,  # Add this line for the LOAD opcode
-    'MOV':   0b1011,  # Add this line for the MOV opcode
+    'LOAD':  0b1010,
+    'MOV':   0b1011,
+    'JAL':   0b1100,
+    'JR':    0b1101,
+    'BNE':   0b1110,
+    'MUL':   0b1111,    # <- new
 }
 
 def register_number(tok):
@@ -128,7 +132,43 @@ def assemble_line(line, labels):
         rt = register_number(parts[2])  # Source register in rt
         # 4b opcode [15:12], 4b rd [11:8], 4b rs [7:4]=0, 4b rt [3:0]=source
         word = (OPCODES['MOV'] << 12) | (rd << 8) | (rs << 4) | rt
-
+    elif instr == 'JAL':
+        # JAL <reg>, <target>
+        if len(parts) != 3:
+            raise ValueError(f'JAL takes 2 args: {line}')
+        rd = register_number(parts[1])  # link register
+        tok = parts[2]
+        if tok.upper() in labels:
+            target = labels[tok.upper()]
+        else:
+            target = int(tok.lstrip('#'), 0)
+        imm9 = target & 0x1FF
+        word = (OPCODES['JAL'] << 12) | (rd << 8) | imm9
+    elif instr == 'JR':
+        # JR <reg>
+        if len(parts) != 2:
+            raise ValueError(f'JR takes 1 reg: {line}')
+        rs = register_number(parts[1])
+        word = (OPCODES['JR'] << 12) | (rs << 8)
+    elif instr == 'BNE':
+        if len(parts) != 2:
+            raise ValueError(f'BNE takes 1 label: {line}')
+        target = parts[1]
+        if target.upper() in labels:
+            imm9 = labels[target.upper()]
+        else:
+            imm9 = int(target.lstrip('#'), 0)
+        # opcode(4) | imm9
+        word = (OPCODES['BNE'] << 12) | (imm9 & 0x1FF)
+        return word
+    elif instr == 'MUL':
+        if len(parts) != 4:
+            raise ValueError(f"wrong args for MUL: {parts}")
+        rd = register_number(parts[1])
+        rs = register_number(parts[2])
+        rt = register_number(parts[3])
+        # opcode@15:12, rd@11:8, rs@7:4, rt@3:0
+        word = (OPCODES['MUL'] << 12) | (rd << 8) | (rs << 4) | rt
     else:
         raise ValueError(f'unknown instruction `{instr}`')
     return word
