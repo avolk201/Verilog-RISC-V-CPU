@@ -1,21 +1,32 @@
-// Test all opcodes: LDI, ADD, SUB, XOR, JMP
+// Functional opcodes: ADD, SUB, XOR, LDI, JMP, BEQZ, HALT
+// Registers:
+//   R0 = F[n-1]
+//   R1 = F[n]
+//   R2 = F[n+1] (temporary next value)
+//   R3 = 0       (constant zero)
+//   R5 = loop counter (how many more fibs to do)
+//   R6 = 1
 
-//  0: load immediates into R1, R2
-LDI R1, #5        // R1 ←  5
-LDI R2, #-2       // R2 ← -2  (sign-extend to 6 bits)
+    // Load initial values
+    LDI R0, #0      // F[0] = 0
+    LDI R1, #1      // F[1] = 1
+    LDI R2, #0      // temp
+    LDI R3, #0      // zero constant
+    LDI R5, #9      // only 8 more fib numbers to compute
+    LDI R6, #1      // decrement amount
 
-//  2: arithmetic
-ADD R3, R1, R2    // R3 ← 5 + (-2) = 3
-SUB R4, R1, R2    // R4 ← 5 - (-2) = 7
-XOR R5, R1, R2    // R5 ← 5 ^ (-2)
+LOOP:
+    // compute next = R0 + R1
+    ADD  R2, R0, R1
 
-//  6: jump over the next LDI
-JMP #7           // PC ← 8
+    // shift window
+    ADD  R0, R1, R3  // R0 ← old R1
+    ADD  R1, R2, R3  // R1 ← new R2
 
-//  7: this instruction should be skipped
-LDI R6, #123      // (skipped)
+    // decrement & maybe finish
+    SUB  R5, R5, R6
+    BEQZ END
+    JMP  LOOP
 
-//  8: land here and load into R7
-LDI R7, #31       // R7 ← 31
-
-// end (you could loop or halt here)
+END:
+    HALT

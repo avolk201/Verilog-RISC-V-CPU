@@ -3,9 +3,9 @@
 // Pipeline register between ID and EX stages
 //----------------------------------------------------------------------------
 module id_ex #(
-  parameter PC_WIDTH       = 12,
+  parameter PC_WIDTH       = 15,
   parameter DATA_WIDTH     = 16,
-  parameter REGADDR_WIDTH  = 3
+  parameter REGADDR_WIDTH  = 4
 ) (
   input                          clk,
   input                          reset,
