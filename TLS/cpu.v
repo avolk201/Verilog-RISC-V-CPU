@@ -299,7 +299,7 @@ data_mem #(
     .clk         (clk),
     .mem_read    (mem_mem_read),
     .mem_write   (mem_mem_write),
-    .addr        (ex_forw_A), // Address from ALU result
+    .addr        (id_reg_data1[7:0]), // <-- Address for load/store
     .write_data  (mem_alu_result), // <-- Correct value to write
     .read_data   (mem_read_data)
 );

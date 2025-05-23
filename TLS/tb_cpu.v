@@ -49,13 +49,13 @@ module tb_cpu;
         clk   = 0;
         reset = 1;
         #1       reset = 0;   // deassert *before* first posedge at t=5ns
-        #1000;
+        #5000;
         $finish;
     end
 
     // Print the final register values
     initial begin
-        #1000;
+        #5000;
         $display("Final register values:");
         $display("r0: %d", r0);
         $display("r1: %d", r1);
@@ -76,7 +76,7 @@ module tb_cpu;
     end
 
     initial begin
-        #1000;
+        #4000;
         $writememh("data_mem_out.hex", DUT.DMEM.memory);
     end
 

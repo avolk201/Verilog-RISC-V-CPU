@@ -14,15 +14,14 @@
     LDI R2, #0      // temp
     LDI R3, #0      // zero constant
     LDI R4, #0      // R4 = memory address pointer
-    LDI R5, #9      // only 8 more fib numbers to compute
+    LDI R5, #31     // number of loops to do
     LDI R6, #1      // decrement amount
 
 LOOP:
-    // compute next = R0 + R1
-    ADD  R2, R0, R1
-
     // store current F[n] (R1) to memory at address R4
     STR  R1, R4
+    // compute next = R0 + R1
+    ADD  R2, R0, R1
 
     // increment address pointer
     ADD  R4, R4, R6
