@@ -30,25 +30,12 @@ module tb_cpu;
     wire [DATA_WIDTH-1:0] r5 = DUT.ID_REGFILE.regs[5];
     wire [DATA_WIDTH-1:0] r6 = DUT.ID_REGFILE.regs[6];
     wire [DATA_WIDTH-1:0] r7 = DUT.ID_REGFILE.regs[7];
-    wire [15:0] alu_in1 = DUT.alu_in1;
-    wire [15:0] alu_in2 = DUT.alu_in2;
-
-    wire        ex_wb       = DUT.EX_MEM.mem_reg_write;
-    wire [2:0]  ex_rd       = DUT.EX_MEM.mem_rd;
-    wire        wb_wb       = DUT.MEM_WB.wb_reg_write;
-    wire [2:0]  wb_rd       = DUT.MEM_WB.wb_rd;
-    wire [2:0] fwd_rs = DUT.ID_EX.ex_rs;
-    wire [2:0] fwd_rt = DUT.ID_EX.ex_rt;
-    wire [1:0] fwdA   = DUT.FORWARD_UNIT.forwardA;
-    wire [1:0] fwdB   = DUT.FORWARD_UNIT.forwardB;
 
     initial begin
         // Dump waveforms
         $dumpfile("tb_cpu.vcd");
         // dump the entire DUT plus both memories one level deeper
         $dumpvars(0, tb_cpu);
-        // now dump your tapped wires
-        $dumpvars(1, r0, r1, r2, r3, r4, r5, r6, r7);
 
         // Initialize
         clk   = 0;
@@ -58,21 +45,18 @@ module tb_cpu;
         $finish;
     end
 
-    // Monitor Program Counter and fetched instruction
-    always @(negedge clk) begin
-        $display("T=%0t | ID_EX: rs=%0d rt=%0d | EX_MEM: rd=%0d | MEM_WB: rd=%0d | fwdA=%b fwdB=%b | stall=%b flush=%b",
-            $time, fwd_rs, fwd_rt, ex_rd, wb_rd, fwdA, fwdB, DUT.stall, DUT.id_ex_flush);
-        $display("    REGFILE: r0=%0d r1=%0d r2=%0d r3=%0d r4=%0d r5=%0d r6=%0d r7=%0d",
-            r0, r1, r2, r3, r4, r5, r6, r7);
-        $display("    WB: reg_write=%b rd=%0d write_data=%0d", DUT.wb_reg_write, DUT.wb_rd, DUT.wb_write_data);
-        $display("    ALU: in1=%0d in2=%0d result=%0d", DUT.alu_in1, DUT.alu_in2, DUT.ALU_I.result);
-    end
-    integer i;
+    // Print the final register values
     initial begin
-        #450;
-        $display("final ID_REGFILE contents:");
-        for (i = 0; i < 8; i = i + 1)
-            $display("R[%0d] = %0h", i, tb_cpu.DUT.ID_REGFILE.regs[i]);
+        #400;
+        $display("Final register values:");
+        $display("r0: %d", r0);
+        $display("r1: %d", r1);
+        $display("r2: %d", r2);
+        $display("r3: %d", r3);
+        $display("r4: %d", r4);
+        $display("r5: %d", r5);
+        $display("r6: %d", r6);
+        $display("r7: %d", r7);
     end
 
 endmodule

@@ -38,7 +38,7 @@ pc #(.WIDTH(WIDTH)) PC (
 instr_mem #(
     .ADDR_WIDTH($clog2(IMEM_DEPTH)),
     .DATA_WIDTH(WIDTH),
-    .MEMFILE("../IDM/instr_init.hex")  // <<< point up into IDM/
+    .MEMFILE("IDM/instr_init.hex")  // <<< point up into IDM/
 ) IMEM (
     .addr  ( pc_current[$clog2(IMEM_DEPTH)-1:0] ),  // <<< slice off the top bits
     .instr ( instr )
@@ -270,20 +270,20 @@ ex_mem #(
 );
 
 // … after you’ve declared mem_rd …
-wire [DATA_WIDTH-1:0] mem_read_data;    // <<< add this so .read_data is 16 bits
+wire [DATA_WIDTH-1:0] mem_read_data;    // 16-bit read data from DMEM
 
 // 3) MEM stage now drives DMEM with real signals
 data_mem #(
     .ADDR_WIDTH  ($clog2(DMEM_DEPTH)),
     .DATA_WIDTH  (DATA_WIDTH),
-    .MEMFILE     ("../IDM/data_init.hex")
+    .MEMFILE     ("IDM/data_init.hex")
 ) DMEM (
     .clk         (clk),
     .mem_read    (mem_mem_read),
     .mem_write   (mem_mem_write),
     .addr        (mem_alu_result[$clog2(DMEM_DEPTH)-1:0]),
     .write_data  (mem_write_data),
-    .read_data   (dmem_read_data)
+    .read_data   (mem_read_data)       // <— use mem_read_data here
 );
 
 // MEM/WB pipeline register
@@ -297,7 +297,7 @@ mem_wb #(
     .mem_reg_write  (mem_reg_write),
     .mem_mem_read   (mem_mem_read),
     // data inputs from MEM stage
-    .mem_read_data  (dmem_read_data),
+    .mem_read_data  (mem_read_data),    // <— and here
     .mem_alu_result (mem_alu_result),
     .mem_rd         (mem_rd),
     // outputs to WB stage / regfile

@@ -62,8 +62,10 @@ def assemble_line(line):
 def main():
     ap = argparse.ArgumentParser(description='Simple 12-bit assembler → hex')
     ap.add_argument('src', help='assembly source file')
-    ap.add_argument('-o','--out', default='../IDM/instr_init.hex',
+    ap.add_argument('-o','--out', default='IDM/instr_init.hex',
                     help='output hex file (default: %(default)s)')
+    ap.add_argument('-d','--depth', type=int, default=256,
+                    help='total memory depth (pad with NOPs up to this many words)')
     args = ap.parse_args()
 
     words = []
@@ -75,6 +77,10 @@ def main():
                 sys.exit(f'Error on line `{ln.strip()}`: {e}')
             if w is not None:
                 words.append(w)
+
+    # pad with NOPs (0) up to requested depth
+    if len(words) < args.depth:
+        words.extend([0] * (args.depth - len(words)))
 
     # write hex, one 3-digit word per line
     with open(args.out, 'w') as f:

@@ -16,6 +16,6 @@ JMP #7           // PC ← 8
 LDI R6, #123      // (skipped)
 
 //  8: land here and load into R7
-LDI R7, #63       // R7 ← 31
+LDI R7, #31       // R7 ← 31
 
 // end (you could loop or halt here)
