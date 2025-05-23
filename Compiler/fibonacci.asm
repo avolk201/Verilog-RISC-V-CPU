@@ -1,4 +1,4 @@
-// Functional opcodes: ADD, SUB, XOR, LDI, JMP, BEQZ, HALT, STR, AND, LOAD
+// Functional opcodes: ADD, SUB, XOR, LDI, JMP, BEQZ, HALT, STR, AND, LOAD, MOV
 // Registers:
 //   R0 = F[n-1]
 //   R1 = F[n]
@@ -27,8 +27,8 @@ LOOP:
     ADD  R4, R4, R6
 
     // shift window
-    ADD  R0, R1, R3  // R0 ← old R1
-    ADD  R1, R2, R3  // R1 ← new R2
+    MOV  R0, R1  // R0 ← old R1
+    MOV  R1, R2  // R1 ← new R2
 
     // decrement & maybe finish
     SUB  R5, R5, R6

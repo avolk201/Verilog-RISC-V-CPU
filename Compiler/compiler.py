@@ -19,7 +19,7 @@ OPCODES = {
     'HALT':  0b0111,
     'BEQZ':  0b1000,
     'STR':   0b1001,
-    'READ':  0b1010,  # Add this line for the READ opcode
+    'LOAD':  0b1010,  # Add this line for the LOAD opcode
     'MOV':   0b1011,  # Add this line for the MOV opcode
 }
 
@@ -106,19 +106,19 @@ def assemble_line(line, labels):
             imm9 = int(target.lstrip('#'),0)
         word = (OPCODES['BEQZ']<<12) | (imm9 & 0x1FF)
 
-    elif instr == 'READ':
+    elif instr == 'LOAD':
         if len(parts) != 3:
-            raise ValueError(f'READ takes 2 args: {line}')
+            raise ValueError(f'LOAD takes 2 args: {line}')
         rd = register_number(parts[1])
         # Check if the second argument is a register
         if parts[2].upper().startswith('R'):
             addr_reg = register_number(parts[2])
             # 4b opcode [15:12], 4b rd [11:8], 4b addr_reg [7:4], 4b mode [3:0]=1 for reg-indirect
-            word = (OPCODES['READ'] << 12) | (rd << 8) | (addr_reg << 4) | 0x1
+            word = (OPCODES['LOAD'] << 12) | (rd << 8) | (addr_reg << 4) | 0x1
         else:
             addr = int(parts[2].lstrip('#'), 0)
             # 4b opcode [15:12], 4b rd [11:8], 8b addr [7:0]
-            word = (OPCODES['READ'] << 12) | (rd << 8) | (addr & 0xFF)
+            word = (OPCODES['LOAD'] << 12) | (rd << 8) | (addr & 0xFF)
 
     elif instr == 'MOV':
         if len(parts) != 3:
