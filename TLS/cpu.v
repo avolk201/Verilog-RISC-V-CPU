@@ -225,9 +225,10 @@ wire [DATA_WIDTH-1:0] ex_forw_B =
 
 // Fix: use ex_forw_B for store address
 wire [DATA_WIDTH-1:0] str_addr = ex_is_str_reg_indirect ? ex_forw_A : id_ex_imm_ext;
-wire [DATA_WIDTH-1:0] alu_in2 = (id_ex_mem_write && id_ex_alu_op == 2'b10) ? str_addr :
-                                (id_ex_alu_src ? id_ex_imm_ext : ex_forw_B);
 
+// Fix: ensure the correct value is written to memory
+wire [DATA_WIDTH-1:0] alu_in2 = (id_ex_mem_write && id_ex_alu_op == 3'b010) ? ex_forw_B :
+                                (id_ex_alu_src ? id_ex_imm_ext : ex_forw_B);
 
 // 1) EX stage: forwarding muxes + ALU
 // -------------------------------------------------
@@ -273,7 +274,7 @@ ex_mem #(
     // data inputs from ALU and ID/EX
     .ex_pc          (id_ex_pc),
     .ex_alu_result  (ex_alu_result),
-    .ex_reg_data2   (ex_forw_A), // <-- value to store (R1)
+    .ex_reg_data2   (ex_forw_B), // <-- Correctly forward the value to store
     .ex_rd          (id_ex_rd),
     // outputs to MEM stage
     .mem_reg_write  (mem_reg_write),
@@ -282,7 +283,7 @@ ex_mem #(
     .mem_branch     (mem_branch),
     .mem_pc         (mem_pc),
     .mem_alu_result (mem_alu_result),
-    .mem_write_data (mem_write_data),
+    .mem_write_data (mem_write_data), // <-- Pass the forwarded value
     .mem_rd         (mem_rd)
 );
 
@@ -298,10 +299,13 @@ data_mem #(
     .clk         (clk),
     .mem_read    (mem_mem_read),
     .mem_write   (mem_mem_write),
-    .addr        (mem_alu_result[$clog2(DMEM_DEPTH)-1:0]),
-    .write_data  (mem_write_data),
-    .read_data   (mem_read_data)       // <— use mem_read_data here
+    .addr        (ex_forw_A), // Address from ALU result
+    .write_data  (mem_alu_result), // <-- Correct value to write
+    .read_data   (mem_read_data)
 );
+
+// Pass the correct value to the memory write data
+assign mem_write_data = ex_forw_B; // Value from the source register (e.g., R1)
 
 // MEM/WB pipeline register
 mem_wb #(

@@ -49,7 +49,7 @@ module id_ex #(
       ex_reg_write  <= 0;
       ex_mem_read   <= 0;
       ex_mem_write  <= 0;
-      ex_alu_op     <= 2'b00;
+      ex_alu_op     <= 3'b000;
       ex_alu_src    <= 0;
       ex_branch     <= 0;
       ex_pc         <= 0;
