@@ -2,7 +2,7 @@
 
 module tb_cpu;
     // Parameters
-    parameter WIDTH      = 12;
+    parameter WIDTH      = 16;
     parameter DATA_WIDTH = 16;
 
     // Clock and reset
@@ -30,6 +30,14 @@ module tb_cpu;
     wire [DATA_WIDTH-1:0] r5 = DUT.ID_REGFILE.regs[5];
     wire [DATA_WIDTH-1:0] r6 = DUT.ID_REGFILE.regs[6];
     wire [DATA_WIDTH-1:0] r7 = DUT.ID_REGFILE.regs[7];
+    wire [DATA_WIDTH-1:0] r8  = DUT.ID_REGFILE.regs[8];
+    wire [DATA_WIDTH-1:0] r9  = DUT.ID_REGFILE.regs[9];
+    wire [DATA_WIDTH-1:0] r10 = DUT.ID_REGFILE.regs[10];
+    wire [DATA_WIDTH-1:0] r11 = DUT.ID_REGFILE.regs[11];
+    wire [DATA_WIDTH-1:0] r12 = DUT.ID_REGFILE.regs[12];
+    wire [DATA_WIDTH-1:0] r13 = DUT.ID_REGFILE.regs[13];
+    wire [DATA_WIDTH-1:0] r14 = DUT.ID_REGFILE.regs[14];
+    wire [DATA_WIDTH-1:0] r15 = DUT.ID_REGFILE.regs[15];
 
     initial begin
         // Dump waveforms
@@ -41,13 +49,13 @@ module tb_cpu;
         clk   = 0;
         reset = 1;
         #1       reset = 0;   // deassert *before* first posedge at t=5ns
-        #400;
+        #1000;
         $finish;
     end
 
     // Print the final register values
     initial begin
-        #400;
+        #1000;
         $display("Final register values:");
         $display("r0: %d", r0);
         $display("r1: %d", r1);
@@ -57,6 +65,19 @@ module tb_cpu;
         $display("r5: %d", r5);
         $display("r6: %d", r6);
         $display("r7: %d", r7);
+        $display("r8 : %d", r8);
+        $display("r9 : %d", r9);
+        $display("r10: %d", r10);
+        $display("r11: %d", r11);
+        $display("r12: %d", r12);
+        $display("r13: %d", r13);
+        $display("r14: %d", r14);
+        $display("r15: %d", r15);
+    end
+
+    initial begin
+        #1000;
+        $writememh("data_mem_out.hex", DUT.DMEM.memory);
     end
 
 endmodule

@@ -2,14 +2,14 @@
 
 //----------------------------------------------------------------------------
 // Module: alu.v
-// A simple 2‑operand ALU with add, xor, pass‑through, and subtract (for mov/ldpc).
+// A simple 2‑operand ALU with add, xor, pass‑through, subtract, and more.
 //----------------------------------------------------------------------------
 module alu #(
     parameter DATA_WIDTH = 16
 ) (
     input  [DATA_WIDTH-1:0] a,      // operand A (e.g. Rs)
     input  [DATA_WIDTH-1:0] b,      // operand B (e.g. Rt or imm)
-    input  [1:0]       alu_op, // 00 = add, 01 = xor, 10 = pass B, others = reserved/zero
+    input  [2:0]            alu_op, // 3 bits: 000 = add, 001 = xor, 010 = pass B, 011 = sub, 100 = and, etc.
     output reg [DATA_WIDTH-1:0] result,
     output                zero  // high if result == 0
 );
@@ -17,11 +17,13 @@ module alu #(
     // combinational operation
     always @(*) begin
         case (alu_op)
-            2'b00: result = a + b;       // ADD
-            2'b01: result = a ^ b;       // XOR
-            2'b10: result = b;           // PASS‑B (mov/ldpc/load)
-            2'b11: result = a - b;       // SUBTRACTION
-            default: result = {DATA_WIDTH{1'b0}}; // <<< use DATA_WIDTH not WIDTH
+            3'b000: result = a + b;         // ADD
+            3'b001: result = a ^ b;         // XOR
+            3'b010: result = b;             // PASS‑B (mov/ldpc/load)
+            3'b011: result = a - b;         // SUBTRACTION
+            3'b100: result = a & b;         // AND
+            // Add more operations here as needed
+            default: result = {DATA_WIDTH{1'b0}};
         endcase
     end
 

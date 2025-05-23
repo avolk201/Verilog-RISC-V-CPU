@@ -1,12 +1,14 @@
-module forward(
-  input            ex_mem_reg_write,
-  input      [2:0] ex_mem_rd,
-  input            wb_reg_write,
-  input      [2:0] wb_rd,
-  input      [2:0] id_ex_rs,
-  input      [2:0] id_ex_rt,
-  output reg [1:0] forwardA,
-  output reg [1:0] forwardB
+module forward #(
+  parameter REGADDR_WIDTH = 4
+) (
+  input                   ex_mem_reg_write,
+  input  [REGADDR_WIDTH-1:0] ex_mem_rd,
+  input                   wb_reg_write,
+  input  [REGADDR_WIDTH-1:0] wb_rd,
+  input  [REGADDR_WIDTH-1:0] id_ex_rs,
+  input  [REGADDR_WIDTH-1:0] id_ex_rt,
+  output reg [1:0]        forwardA,
+  output reg [1:0]        forwardB
 );
   always @(*) begin
     // Default: no forwarding

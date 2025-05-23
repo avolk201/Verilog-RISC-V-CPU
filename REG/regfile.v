@@ -4,7 +4,7 @@
 //----------------------------------------------------------------------------
 module regfile #(
   parameter DATA_WIDTH    = 16,
-  parameter REGADDR_WIDTH = 3,
+  parameter REGADDR_WIDTH = 4,
   parameter NUM_REGS      = (1<<REGADDR_WIDTH)
 ) (
   input                        clk,

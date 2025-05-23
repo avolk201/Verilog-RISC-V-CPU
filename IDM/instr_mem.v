@@ -7,7 +7,7 @@
 
 module instr_mem #(
     parameter ADDR_WIDTH = 8,          // = $clog2(IMEM_DEPTH)
-    parameter DATA_WIDTH = 12,         // instruction width
+    parameter DATA_WIDTH = 16,         // instruction width
     parameter MEMFILE    = "instr_init.hex"
 ) (
     input  [ADDR_WIDTH-1:0] addr,

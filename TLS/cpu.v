@@ -5,9 +5,9 @@
 // Top-level pipelined CPU
 //----------------------------------------------------------------------------
 module cpu #(
-    parameter WIDTH       = 12,  // instruction and PC width
+    parameter WIDTH       = 15,  // ← was 12
     parameter DATA_WIDTH  = 16,  // data path width
-    parameter REGADDR_W   = 3,
+    parameter REGADDR_W   = 4,   // ← now 4 bits
     parameter IMEM_DEPTH  = 256,
     parameter DMEM_DEPTH  = 256
 ) (
@@ -21,15 +21,21 @@ wire [WIDTH-1:0] instr;
 
 // stall/flush from hazard & jumps
 wire        stall, pc_write, if_id_write;
+wire        halt;         // NEW from control
+wire        real_pc_write = pc_write & ~halt; // real PC write = normal hazard.pc_write AND NOT halted
 wire        ldpc;                          // from control
 wire        if_id_flush = ldpc;            // flush IF/ID on jump
 wire        id_ex_flush = stall || ldpc;   // flush ID/EX on jump
+
+// real IF/ID write-enable: don’t capture any more instructions once halt is asserted
+wire real_if_id_write = if_id_write & ~halt;
+wire real_if_id_stall = ~real_if_id_write;
 
 // Instantiate program counter
 pc #(.WIDTH(WIDTH)) PC (
     .clk(clk),
     .reset(reset),
-    .pc_write (pc_write),
+    .pc_write (real_pc_write),   // use gated write
     .pc_in(pc_next),
     .pc_out(pc_current)
 );
@@ -52,7 +58,7 @@ if_id #(
 ) IF_ID (
     .clk(clk),
     .reset(reset),
-    .stall(~if_id_write),          // from hazard detection
+    .stall(real_if_id_stall),          // from hazard detection
     .flush(if_id_flush),          // now flush on jump
     .if_pc(pc_current),
     .if_instr(instr),
@@ -62,10 +68,13 @@ if_id #(
 
 // ---------- ID Stage Signals ----------
 // Instruction decoding
-wire [2:0] id_opcode = if_id_instr[11:9];   // bits [11:9]
-wire [2:0] id_rd     = if_id_instr[ 8:6];   // bits [8:6]
-wire [2:0] id_rs     = if_id_instr[ 5:3];   // bits [5:3] (R‑type Rs)
-wire [2:0] id_rt     = if_id_instr[ 2:0];   // bits [2:0] (R‑type Rt)
+wire [3:0] id_opcode = if_id_instr[15:12];   // bits [15:12]
+wire [3:0] id_rd     = if_id_instr[11: 8];   // bits [11:8]
+wire [3:0] id_rs     = if_id_instr[ 7: 4];   // bits [7:4] (R‑type Rs)
+wire [3:0] id_rt     = if_id_instr[ 3: 0];   // bits [3:0] (R‑type Rt)
+wire is_str_reg_indirect = (id_opcode == 4'b1001) && (if_id_instr[3:0] == 4'b0001);
+
+
 
 // Immediate generation
 wire [5:0] id_imm6   = if_id_instr[5:0];   // 6-bit immediate field
@@ -80,16 +89,18 @@ imm_gen #(
 
 // Control unit
 wire reg_write, alu_src, mem_read, mem_write, branch;
-wire [1:0] alu_op;
+wire [2:0] alu_op;
 control CONTROL (
     .opcode   (id_opcode),
+    .zero     (zero_flag),
     .reg_write(reg_write),
     .alu_src  (alu_src),
     .mem_read (mem_read),
     .mem_write(mem_write),
     .branch   (branch),
     .alu_op   (alu_op),
-    .ldpc     (ldpc)                 // hook up new ldpc
+    .ldpc     (ldpc),                 // hook up new ldpc
+    .halt     (halt)         // NEW
 );
 
 // build an absolute 12-bit jump target out of the lower 9 bits
@@ -125,10 +136,13 @@ regfile #(
 
 // ---------- ID/EX Pipeline Register ----------
 wire id_ex_reg_write, id_ex_alu_src, id_ex_mem_read, id_ex_mem_write, id_ex_branch;
-wire [1:0] id_ex_alu_op;
+wire [2:0] id_ex_alu_op;
 wire [DATA_WIDTH-1:0] id_ex_reg_data1, id_ex_reg_data2, id_ex_imm_ext;
-wire [2:0] id_ex_rs, id_ex_rt, id_ex_rd;
+wire [3:0] id_ex_rs, id_ex_rt, id_ex_rd;
 wire [WIDTH-1:0] id_ex_pc;
+
+// and in the ID→EX boundary also flush on halt
+wire real_id_ex_flush = id_ex_flush || halt;
 
 id_ex #(
     .PC_WIDTH       (WIDTH),
@@ -137,7 +151,7 @@ id_ex #(
 ) ID_EX (
     .clk            (clk),
     .reset          (reset),
-    .flush          (id_ex_flush),
+    .flush          (real_id_ex_flush),
     .id_reg_write   (reg_write),
     .id_mem_read    (mem_read),
     .id_mem_write   (mem_write),
@@ -164,7 +178,9 @@ id_ex #(
     .ex_imm_ext     (id_ex_imm_ext),
     .ex_rs          (id_ex_rs),
     .ex_rt          (id_ex_rt),
-    .ex_rd          (id_ex_rd)
+    .ex_rd          (id_ex_rd),
+    .id_is_str_reg_indirect(is_str_reg_indirect),
+    .ex_is_str_reg_indirect(ex_is_str_reg_indirect)
 );
 
 // … then later, after you’ve declared your ID/EX wires …
@@ -207,10 +223,12 @@ wire [DATA_WIDTH-1:0] ex_forw_B =
       (forwardB == 2'b01) ? wb_write_data  :    // from MEM/WB
                              id_ex_reg_data2;   // from ID/EX
 
-// then pick between reg operand and immediate
-wire [DATA_WIDTH-1:0] alu_in2 = id_ex_alu_src 
-                               ? id_ex_imm_ext 
-                               : ex_forw_B;
+// Fix: use ex_forw_B for store address
+wire [DATA_WIDTH-1:0] str_addr = ex_is_str_reg_indirect ? ex_forw_A : id_ex_imm_ext;
+
+// Fix: ensure the correct value is written to memory
+wire [DATA_WIDTH-1:0] alu_in2 = (id_ex_mem_write && id_ex_alu_op == 3'b010) ? ex_forw_B :
+                                (id_ex_alu_src ? id_ex_imm_ext : ex_forw_B);
 
 // 1) EX stage: forwarding muxes + ALU
 // -------------------------------------------------
@@ -256,7 +274,7 @@ ex_mem #(
     // data inputs from ALU and ID/EX
     .ex_pc          (id_ex_pc),
     .ex_alu_result  (ex_alu_result),
-    .ex_reg_data2   (alu_in2_reg),
+    .ex_reg_data2   (ex_forw_B), // <-- Correctly forward the value to store
     .ex_rd          (id_ex_rd),
     // outputs to MEM stage
     .mem_reg_write  (mem_reg_write),
@@ -265,7 +283,7 @@ ex_mem #(
     .mem_branch     (mem_branch),
     .mem_pc         (mem_pc),
     .mem_alu_result (mem_alu_result),
-    .mem_write_data (mem_write_data),
+    .mem_write_data (mem_write_data), // <-- Pass the forwarded value
     .mem_rd         (mem_rd)
 );
 
@@ -281,10 +299,13 @@ data_mem #(
     .clk         (clk),
     .mem_read    (mem_mem_read),
     .mem_write   (mem_mem_write),
-    .addr        (mem_alu_result[$clog2(DMEM_DEPTH)-1:0]),
-    .write_data  (mem_write_data),
-    .read_data   (mem_read_data)       // <— use mem_read_data here
+    .addr        (ex_forw_A), // Address from ALU result
+    .write_data  (mem_alu_result), // <-- Correct value to write
+    .read_data   (mem_read_data)
 );
+
+// Pass the correct value to the memory write data
+assign mem_write_data = ex_forw_B; // Value from the source register (e.g., R1)
 
 // MEM/WB pipeline register
 mem_wb #(
