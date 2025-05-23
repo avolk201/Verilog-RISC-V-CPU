@@ -74,6 +74,19 @@ module control (
         alu_op    = 3'b010; // pass-through (address)
       end
 
+      4'b1010: begin // READ
+        reg_write = 1;  // Write to register
+        mem_read  = 1;  // Enable memory read
+        alu_src   = 1;  // Use immediate as address
+        alu_op    = 3'b010; // Pass-through
+      end
+
+      4'b1011: begin // MOV
+        reg_write = 1;  // Enable register write
+        alu_src   = 0;  // Use register as source
+        alu_op    = 3'b010; // Pass-through (B)
+      end
+
       default: begin
         reg_write = 0;
       end
