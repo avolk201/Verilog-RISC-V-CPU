@@ -20,8 +20,13 @@ module regfile #(
 
   reg [DATA_WIDTH-1:0] regs [0:NUM_REGS-1];
 
-  assign read_data1 = regs[read_reg1];
-  assign read_data2 = regs[read_reg2];
+  // write-first (forward write_data on a matched read_reg)
+  assign read_data1 = (reg_write && (write_reg == read_reg1))
+                      ? write_data
+                      : regs[read_reg1];
+  assign read_data2 = (reg_write && (write_reg == read_reg2))
+                      ? write_data
+                      : regs[read_reg2];
 
   always @(posedge clk or posedge reset) begin
     if (reset) begin
@@ -32,4 +37,5 @@ module regfile #(
       regs[write_reg] <= write_data;
     end
   end
+
 endmodule

@@ -19,6 +19,9 @@ module instr_mem #(
 
     // preload from hex file (no “//…” comments in the .hex!)
     initial begin
+        integer i;
+        for (i=0; i<(1<<ADDR_WIDTH); i=i+1)
+            mem[i] = {DATA_WIDTH{1'b0}};  // NOP
         $readmemh(MEMFILE, mem);
     end
 

@@ -13,7 +13,7 @@ module ex_mem #(
     // data inputs
     input   [PC_WIDTH-1:0]       ex_pc,
     input   [DATA_WIDTH-1:0]     ex_alu_result,
-    input   [DATA_WIDTH-1:0]     ex_read_data2,
+    input   [DATA_WIDTH-1:0]     ex_reg_data2,
     input   [REGADDR_WIDTH-1:0]  ex_rd,
     // outputs to MEM
     output reg                   mem_reg_write,
@@ -39,11 +39,11 @@ module ex_mem #(
         end else begin
             mem_reg_write   <= ex_reg_write;
             mem_mem_read    <= ex_mem_read;
-            mem_mem_write   <= ex_mem_write;
-            mem_branch      <= ex_branch;
-            mem_pc          <= ex_pc;
-            mem_alu_result  <= ex_alu_result;   // ← forward
-            mem_write_data  <= ex_read_data2;   // ← forward
+            mem_mem_write   <= ex_mem_write;    // <-- add
+            mem_branch      <= ex_branch;       // <-- add
+            mem_pc          <= ex_pc;           // <-- add
+            mem_alu_result  <= ex_alu_result;   // <-- add
+            mem_write_data  <= ex_reg_data2;    // <-- add
             mem_rd          <= ex_rd;
         end
     end

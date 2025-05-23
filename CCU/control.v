@@ -52,6 +52,13 @@ module control (
         reg_write = 0;       // no register write
       end
 
+      3'b101: begin        // JMP / goto
+        // load PC from immediate
+        reg_write = 0;
+        alu_src   = 1;       // B = imm (we won’t actually drive the ALU here)
+        alu_op    = 2'b10;   // PASS-B
+        ldpc      = 1;       // new signal to trigger PC mux
+      end
 
 
       default: begin

@@ -1,42 +1,8 @@
-449  // LDI  r1,  #9
-E00  // NOP
-E00
-
-4BC  // LDI  r2, #-4
-E00
-E00
-E00
-E00
-
-0CA  // ADD  r3,  r1, r2      → r3 = 9 + (-4)  = 5
-E00
-E00
-E00
-E00
-
-70A  // XOR  r4,  r1, r2      → r4 = 9 ^ (-4) = -11
-E00
-E00
-E00
-E00
-
-34A  // SUB  r5,  r1, r2      → r5 = 9 - (-4)  = 13
-E00
-E00
-E00
-E00
-
-19C  // ADD  r6,  r3, r4      → r6 = 5 + (-11) = -6
-E00
-E00
-E00
-E00
-
-1F5  // ADD  r7,  r6, r5      → r7 = -6 + 13   = 7
-E00
-E00
-E00
-E00
-
-E00  // final NOPs to drain pipeline
-E00
+445
+4BE
+0CA
+30A
+74A
+A07
+5BB
+5FF
