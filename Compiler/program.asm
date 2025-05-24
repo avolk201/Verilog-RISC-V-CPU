@@ -14,7 +14,7 @@
     LDI R2, #0      // temp
     LDI R3, #0      // zero constant
     LDI R4, #1      // R4 = memory address pointer
-    LDI R5, #24     // number of loops to do
+    LDI R5, #25     // number of loops to do
     LDI R6, #1      // decrement amount
 
 LOOP:
