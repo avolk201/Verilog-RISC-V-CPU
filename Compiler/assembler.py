@@ -14,7 +14,7 @@ OPCODES = {
     'LDI':   0b0010,
     'XOR':   0b0011,
     'AND':   0b0100,
-    'OR':    0b0101,
+    'DIV':   0b0101,      # ← reuse the '0101' slot
     'JMP':   0b0110,
     'HALT':  0b0111,
     'BEQZ':  0b1000,
@@ -103,11 +103,11 @@ def assemble_line(line, labels):
     elif instr == 'BEQZ':
         if len(parts)!=2:
             raise ValueError(f'BEQZ takes 1 label: {line}')
-        target = parts[1]
-        if target in labels:
-            imm9 = labels[target]
+        tok = parts[1].upper()              # uppercase the token
+        if tok in labels:
+            imm9 = labels[tok]
         else:
-            imm9 = int(target.lstrip('#'),0)
+            imm9 = int(parts[1].lstrip('#'), 0)
         word = (OPCODES['BEQZ']<<12) | (imm9 & 0x1FF)
 
     elif instr == 'LOAD':
@@ -169,6 +169,15 @@ def assemble_line(line, labels):
         rt = register_number(parts[3])
         # opcode@15:12, rd@11:8, rs@7:4, rt@3:0
         word = (OPCODES['MUL'] << 12) | (rd << 8) | (rs << 4) | rt
+    elif instr == 'DIV':
+        if len(parts)!=4:
+            raise ValueError(f"DIV takes 3 regs: {line}")
+        rd = register_number(parts[1])
+        rs = register_number(parts[2])
+        rt = register_number(parts[3])
+        # 4b opcode @ [15:12], rd@11:8, rs@7:4, rt@3:0
+        word = (OPCODES['DIV'] << 12) | (rd<<8) | (rs<<4) | rt
+        return word
     else:
         raise ValueError(f'unknown instruction `{instr}`')
     return word

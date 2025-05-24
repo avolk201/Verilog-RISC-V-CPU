@@ -1,17 +1,36 @@
-// Functional opcodes: ADD, SUB, XOR, LDI (load data immediate), JMP (jump/goto), BEQZ (break if equals zero), HALT, STR (store), AND, LOAD, MOV (move)
+// Functional opcodes: ADD, SUB, XOR, LDI (load data immediate), JMP (jump/goto), BEQZ (branch if equals zero), HALT, STR (store), AND, LOAD, MOV (move), JAL, JR, MUL
+// Registers:
+//   R0 = F[n-1]
+//   R1 = F[n]
+//   R2 = F[n+1] (temporary next value)
+//   R3 = 0       (constant zero)
+//   R4 = memory address pointer
+//   R5 = loop counter (how many more fibs to do)
+//   R6 = 1
 
+    // Load initial values
+    LDI R0, #0      // F[0] = 0
+    LDI R1, #1      // F[1] = 1
+    LDI R2, #0      // temp
+    LDI R3, #0      // zero constant
+    LDI R4, #1      // R4 = memory address pointer
+    LDI R5, #24     // number of loops to do
+    LDI R6, #1      // decrement amount
 
-LDI R0, #0   // Load value into R0
-LDI R1, #-10    // Load value into R1
-ADD R1, R1, R1
-JAL R15, FUNC
-LDI R5, #1
-MOV R1, R2 // Move value from R2 to R1
-HALT
+LOOP:
+    // store current F[n] (R1) to memory at address R4
+    STR  R0, R4
+    // compute next = R0 + R1
+    ADD  R2, R0, R1
 
-FUNC:
-LDI R3, #-16
-MUL R2, R3, R1
+    // increment address pointer
+    ADD  R4, R4, R6
 
-JR R15
+    // shift window
+    MOV  R0, R1  // R0 ← old R1
+    MOV  R1, R2  // R1 ← new R2
+
+    // decrement & maybe finish
+    SUB  R5, R5, R6
+    BNE LOOP
 HALT

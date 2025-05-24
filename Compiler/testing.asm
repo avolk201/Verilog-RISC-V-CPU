@@ -1,4 +1,4 @@
-// Functional opcodes: ADD, SUB, XOR, LDI (load data immediate), JMP (jump/goto), BEQZ (break if equals zero), HALT, STR (store), AND, LOAD, MOV (move)
+// Functional opcodes: ADD, SUB, XOR, LDI (load data immediate), JMP (jump/goto), BEQZ (branch if equals zero), HALT, STR (store), AND, LOAD, MOV (move), JAL, JR, MUL
 
 
 LDI R0, #0   // Load value into R0

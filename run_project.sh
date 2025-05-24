@@ -2,7 +2,7 @@
 set -e
 
 # assemble
-python3 Compiler/compiler.py Compiler/program.asm
+python3 Compiler/assembler.py Compiler/program.asm
 
 # compile & link, override MEMFILE for both instr_mem & data_mem
 iverilog -g2012 \

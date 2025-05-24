@@ -1,4 +1,4 @@
-// Functional opcodes: ADD, SUB, XOR, LDI, JMP, BEQZ, HALT, STR, AND, LOAD, MOV
+// Functional opcodes: ADD, SUB, XOR, LDI (load data immediate), JMP (jump/goto), BEQZ (branch if equals zero), HALT, STR (store), AND, LOAD, MOV (move), JAL, JR, MUL
 // Registers:
 //   R0 = F[n-1]
 //   R1 = F[n]
@@ -14,7 +14,7 @@
     LDI R2, #0      // temp
     LDI R3, #0      // zero constant
     LDI R4, #1      // R4 = memory address pointer
-    LDI R5, #31     // number of loops to do
+    LDI R5, #24     // number of loops to do
     LDI R6, #1      // decrement amount
 
 LOOP:

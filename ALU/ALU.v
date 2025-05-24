@@ -23,6 +23,7 @@ module alu #(
             3'b011: result = a - b;         // SUBTRACTION
             3'b100: result = a & b;         // AND
             3'b101:  result = a * b;        // MUL
+            3'b110: result = a / b;
             // Add more operations here as needed
             default: result = {DATA_WIDTH{1'b0}};
         endcase
