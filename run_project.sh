@@ -12,7 +12,7 @@ iverilog -g2012 \
     TLS/tb_cpu.v TLS/cpu.v \
     IDM/instr_mem.v IDM/data_mem.v \
     IMGEN/imm_gen.v CCU/control.v \
-    BPC/pc.v \
+    BPC/pc.v TLS/fsm.v\
     HFU/forward.v HFU/hazard.v \
     PIP/if_id.v PIP/id_ex.v PIP/ex_mem.v PIP/mem_wb.v \
     REG/regfile.v ALU/ALU.v

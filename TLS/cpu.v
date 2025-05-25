@@ -98,7 +98,7 @@ imm_gen #(
 // Control unit
 wire reg_write, alu_src, mem_read, mem_write, branch;
 wire [2:0] alu_op;
-control CONTROL (
+fsm CONTROL (
     .opcode   (id_opcode),
     .zero     (zero_flag),
     .reg_write(reg_write),
