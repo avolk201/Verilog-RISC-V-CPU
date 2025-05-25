@@ -100,6 +100,7 @@ module control (
         alu_op    = 3'b010;
         ldpc      = 1;
       end
+
       4'b1101: begin // JR
         reg_write = 0;
         alu_src   = 0;
@@ -112,11 +113,13 @@ module control (
         alu_src   = 0;      // two-register multiply
         alu_op    = 3'b101; // new ALU code
       end
+
       4'b0101: begin // DIV
         reg_write = 1;
         alu_src   = 0;       // two-register divide
         alu_op    = 3'b110;  // new DIV code
       end
+
       default: begin
         reg_write = 0;
       end
