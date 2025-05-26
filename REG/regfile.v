@@ -15,7 +15,11 @@ module regfile #(
   output     [DATA_WIDTH-1:0]    read_data2,
   input      [REGADDR_WIDTH-1:0] write_reg,
   input      [DATA_WIDTH-1:0]    write_data,
-  input                        reg_write
+  input                        reg_write,
+
+  // new debug port
+  input      [REGADDR_WIDTH-1:0] debug_addr,
+  output     [DATA_WIDTH-1:0]    debug_data
 );
 
   reg [DATA_WIDTH-1:0] regs [0:NUM_REGS-1];
@@ -27,6 +31,9 @@ module regfile #(
   assign read_data2 = (reg_write && (write_reg == read_reg2))
                       ? write_data
                       : regs[read_reg2];
+
+  // expose the raw contents of any register
+  assign debug_data = regs[debug_addr];
 
   always @(posedge clk or posedge reset) begin
     if (reset) begin

@@ -12,7 +12,10 @@ module cpu #(
     parameter DMEM_DEPTH  = 256
 ) (
     input                 clk,
-    input                 reset
+    input                 reset,
+    // new debug ports
+    input  [REGADDR_W-1:0]  debug_addr,
+    output [DATA_WIDTH-1:0] debug_data
 );
 
 // ---------- IF Stage Signals ----------
@@ -134,13 +137,15 @@ regfile #(
 ) ID_REGFILE (
   .clk        (clk),
   .reset      (reset),
-  .reg_write  (wb_reg_write),
-  .read_reg1  (read_reg1),       // ← was id_rs
+  .read_reg1  (read_reg1),
   .read_reg2  (id_rt),
+  .read_data1 (id_reg_data1),
+  .read_data2 (id_reg_data2),
   .write_reg  (wb_rd),
   .write_data (wb_write_data),
-  .read_data1 (id_reg_data1),
-  .read_data2 (id_reg_data2)
+  .reg_write  (wb_reg_write),
+  .debug_addr (debug_addr),
+  .debug_data (debug_data)
 );
 
 // Add these wires near your other pipeline wires:
