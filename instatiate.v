@@ -1,0 +1,1 @@
+module instatiate((KEY,LEDR,SW,HEX0,HEX1,HEX2,HEX3);
