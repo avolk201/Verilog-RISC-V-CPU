@@ -1,0 +1,604 @@
+Analysis & Synthesis report for Verilog-RISC-V-CPU
+Mon May 26 18:13:17 2025
+Quartus Prime Version 22.1std.0 Build 915 10/25/2022 SC Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Analysis & Synthesis Summary
+  3. Analysis & Synthesis Settings
+  4. Parallel Compilation
+  5. Analysis & Synthesis Source Files Read
+  6. Analysis & Synthesis Resource Usage Summary
+  7. Analysis & Synthesis Resource Utilization by Entity
+  8. State Machine - |cpu|fsm:CONTROL|state
+  9. Registers Removed During Synthesis
+ 10. Removed Registers Triggering Further Register Optimizations
+ 11. General Register Statistics
+ 12. Parameter Settings for User Entity Instance: Top-level Entity: |cpu
+ 13. Parameter Settings for User Entity Instance: pc:PC
+ 14. Parameter Settings for User Entity Instance: instr_mem:IMEM
+ 15. Parameter Settings for User Entity Instance: if_id:IF_ID
+ 16. Parameter Settings for User Entity Instance: imm_gen:IMM_GEN
+ 17. Parameter Settings for User Entity Instance: regfile:ID_REGFILE
+ 18. Parameter Settings for User Entity Instance: id_ex:ID_EX
+ 19. Parameter Settings for User Entity Instance: forward:FORWARD_UNIT
+ 20. Parameter Settings for User Entity Instance: alu:ALU_I
+ 21. Parameter Settings for User Entity Instance: ex_mem:EX_MEM
+ 22. Parameter Settings for User Entity Instance: data_mem:DMEM
+ 23. Parameter Settings for User Entity Instance: mem_wb:MEM_WB
+ 24. Port Connectivity Checks: "ex_mem:EX_MEM"
+ 25. Port Connectivity Checks: "id_ex:ID_EX"
+ 26. Port Connectivity Checks: "fsm:CONTROL"
+ 27. Post-Synthesis Netlist Statistics for Top Partition
+ 28. Elapsed Time Per Partition
+ 29. Analysis & Synthesis Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2022  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
+
+
+
++----------------------------------------------------------------------------------+
+; Analysis & Synthesis Summary                                                     ;
++---------------------------------+------------------------------------------------+
+; Analysis & Synthesis Status     ; Successful - Mon May 26 18:13:17 2025          ;
+; Quartus Prime Version           ; 22.1std.0 Build 915 10/25/2022 SC Lite Edition ;
+; Revision Name                   ; Verilog-RISC-V-CPU                             ;
+; Top-level Entity Name           ; cpu                                            ;
+; Family                          ; Cyclone V                                      ;
+; Logic utilization (in ALMs)     ; N/A                                            ;
+; Total registers                 ; 0                                              ;
+; Total pins                      ; 2                                              ;
+; Total virtual pins              ; 0                                              ;
+; Total block memory bits         ; 0                                              ;
+; Total DSP Blocks                ; 0                                              ;
+; Total HSSI RX PCSs              ; 0                                              ;
+; Total HSSI PMA RX Deserializers ; 0                                              ;
+; Total HSSI TX PCSs              ; 0                                              ;
+; Total HSSI PMA TX Serializers   ; 0                                              ;
+; Total PLLs                      ; 0                                              ;
+; Total DLLs                      ; 0                                              ;
++---------------------------------+------------------------------------------------+
+
+
++---------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Settings                                                                                             ;
++---------------------------------------------------------------------------------+--------------------+--------------------+
+; Option                                                                          ; Setting            ; Default Value      ;
++---------------------------------------------------------------------------------+--------------------+--------------------+
+; Device                                                                          ; 5CSEMA5F31C6       ;                    ;
+; Top-level entity name                                                           ; cpu                ; Verilog-RISC-V-CPU ;
+; Family name                                                                     ; Cyclone V          ; Cyclone V          ;
+; Use smart compilation                                                           ; Off                ; Off                ;
+; Enable parallel Assembler and Timing Analyzer during compilation                ; On                 ; On                 ;
+; Enable compact report table                                                     ; Off                ; Off                ;
+; Restructure Multiplexers                                                        ; Auto               ; Auto               ;
+; MLAB Add Timing Constraints For Mixed-Port Feed-Through Mode Setting Don't Care ; Off                ; Off                ;
+; Create Debugging Nodes for IP Cores                                             ; Off                ; Off                ;
+; Preserve fewer node names                                                       ; On                 ; On                 ;
+; Intel FPGA IP Evaluation Mode                                                   ; Enable             ; Enable             ;
+; Verilog Version                                                                 ; Verilog_2001       ; Verilog_2001       ;
+; VHDL Version                                                                    ; VHDL_1993          ; VHDL_1993          ;
+; State Machine Processing                                                        ; Auto               ; Auto               ;
+; Safe State Machine                                                              ; Off                ; Off                ;
+; Extract Verilog State Machines                                                  ; On                 ; On                 ;
+; Extract VHDL State Machines                                                     ; On                 ; On                 ;
+; Ignore Verilog initial constructs                                               ; Off                ; Off                ;
+; Iteration limit for constant Verilog loops                                      ; 5000               ; 5000               ;
+; Iteration limit for non-constant Verilog loops                                  ; 250                ; 250                ;
+; Add Pass-Through Logic to Inferred RAMs                                         ; On                 ; On                 ;
+; Infer RAMs from Raw Logic                                                       ; On                 ; On                 ;
+; Parallel Synthesis                                                              ; On                 ; On                 ;
+; DSP Block Balancing                                                             ; Auto               ; Auto               ;
+; NOT Gate Push-Back                                                              ; On                 ; On                 ;
+; Power-Up Don't Care                                                             ; On                 ; On                 ;
+; Remove Redundant Logic Cells                                                    ; Off                ; Off                ;
+; Remove Duplicate Registers                                                      ; On                 ; On                 ;
+; Ignore CARRY Buffers                                                            ; Off                ; Off                ;
+; Ignore CASCADE Buffers                                                          ; Off                ; Off                ;
+; Ignore GLOBAL Buffers                                                           ; Off                ; Off                ;
+; Ignore ROW GLOBAL Buffers                                                       ; Off                ; Off                ;
+; Ignore LCELL Buffers                                                            ; Off                ; Off                ;
+; Ignore SOFT Buffers                                                             ; On                 ; On                 ;
+; Limit AHDL Integers to 32 Bits                                                  ; Off                ; Off                ;
+; Optimization Technique                                                          ; Balanced           ; Balanced           ;
+; Carry Chain Length                                                              ; 70                 ; 70                 ;
+; Auto Carry Chains                                                               ; On                 ; On                 ;
+; Auto Open-Drain Pins                                                            ; On                 ; On                 ;
+; Perform WYSIWYG Primitive Resynthesis                                           ; Off                ; Off                ;
+; Auto ROM Replacement                                                            ; On                 ; On                 ;
+; Auto RAM Replacement                                                            ; On                 ; On                 ;
+; Auto DSP Block Replacement                                                      ; On                 ; On                 ;
+; Auto Shift Register Replacement                                                 ; Auto               ; Auto               ;
+; Allow Shift Register Merging across Hierarchies                                 ; Auto               ; Auto               ;
+; Auto Clock Enable Replacement                                                   ; On                 ; On                 ;
+; Strict RAM Replacement                                                          ; Off                ; Off                ;
+; Allow Synchronous Control Signals                                               ; On                 ; On                 ;
+; Force Use of Synchronous Clear Signals                                          ; Off                ; Off                ;
+; Auto Resource Sharing                                                           ; Off                ; Off                ;
+; Allow Any RAM Size For Recognition                                              ; Off                ; Off                ;
+; Allow Any ROM Size For Recognition                                              ; Off                ; Off                ;
+; Allow Any Shift Register Size For Recognition                                   ; Off                ; Off                ;
+; Use LogicLock Constraints during Resource Balancing                             ; On                 ; On                 ;
+; Ignore translate_off and synthesis_off directives                               ; Off                ; Off                ;
+; Timing-Driven Synthesis                                                         ; On                 ; On                 ;
+; Report Parameter Settings                                                       ; On                 ; On                 ;
+; Report Source Assignments                                                       ; On                 ; On                 ;
+; Report Connectivity Checks                                                      ; On                 ; On                 ;
+; Ignore Maximum Fan-Out Assignments                                              ; Off                ; Off                ;
+; Synchronization Register Chain Length                                           ; 3                  ; 3                  ;
+; Power Optimization During Synthesis                                             ; Normal compilation ; Normal compilation ;
+; HDL message level                                                               ; Level2             ; Level2             ;
+; Suppress Register Optimization Related Messages                                 ; Off                ; Off                ;
+; Number of Removed Registers Reported in Synthesis Report                        ; 5000               ; 5000               ;
+; Number of Swept Nodes Reported in Synthesis Report                              ; 5000               ; 5000               ;
+; Number of Inverted Registers Reported in Synthesis Report                       ; 100                ; 100                ;
+; Clock MUX Protection                                                            ; On                 ; On                 ;
+; Auto Gated Clock Conversion                                                     ; Off                ; Off                ;
+; Block Design Naming                                                             ; Auto               ; Auto               ;
+; SDC constraint protection                                                       ; Off                ; Off                ;
+; Synthesis Effort                                                                ; Auto               ; Auto               ;
+; Shift Register Replacement - Allow Asynchronous Clear Signal                    ; On                 ; On                 ;
+; Pre-Mapping Resynthesis Optimization                                            ; Off                ; Off                ;
+; Analysis & Synthesis Message Level                                              ; Medium             ; Medium             ;
+; Disable Register Merging Across Hierarchies                                     ; Auto               ; Auto               ;
+; Resource Aware Inference For Block RAM                                          ; On                 ; On                 ;
+; Automatic Parallel Synthesis                                                    ; On                 ; On                 ;
+; Partial Reconfiguration Bitstream ID                                            ; Off                ; Off                ;
++---------------------------------------------------------------------------------+--------------------+--------------------+
+
+
++------------------------------------------+
+; Parallel Compilation                     ;
++----------------------------+-------------+
+; Processors                 ; Number      ;
++----------------------------+-------------+
+; Number detected on machine ; 8           ;
+; Maximum allowed            ; 4           ;
+;                            ;             ;
+; Average used               ; 1.00        ;
+; Maximum used               ; 1           ;
+;                            ;             ;
+; Usage by Processor         ; % Time Used ;
+;     Processor 1            ; 100.0%      ;
++----------------------------+-------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                                ;
++----------------------------------+-----------------+------------------------+---------------------------------------------------------------+---------+
+; File Name with User-Entered Path ; Used in Netlist ; File Type              ; File Name with Absolute Path                                  ; Library ;
++----------------------------------+-----------------+------------------------+---------------------------------------------------------------+---------+
+; TLS/fsm.v                        ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/fsm.v       ;         ;
+; TLS/cpu.v                        ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v       ;         ;
+; REG/regfile.v                    ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v   ;         ;
+; PIP/mem_wb.v                     ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v    ;         ;
+; PIP/if_id.v                      ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/if_id.v     ;         ;
+; PIP/id_ex.v                      ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/id_ex.v     ;         ;
+; PIP/ex_mem.v                     ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/ex_mem.v    ;         ;
+; IMGEN/imm_gen.v                  ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IMGEN/imm_gen.v ;         ;
+; IDM/instr_mem.v                  ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/instr_mem.v ;         ;
+; IDM/data_mem.v                   ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/data_mem.v  ;         ;
+; HFU/hazard.v                     ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/HFU/hazard.v    ;         ;
+; HFU/forward.v                    ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/HFU/forward.v   ;         ;
+; BPC/pc.v                         ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/BPC/pc.v        ;         ;
+; ALU/ALU.v                        ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/ALU/ALU.v       ;         ;
++----------------------------------+-----------------+------------------------+---------------------------------------------------------------+---------+
+
+
++-----------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary         ;
++---------------------------------------------+-------+
+; Resource                                    ; Usage ;
++---------------------------------------------+-------+
+; Estimate of Logic utilization (ALMs needed) ; 0     ;
+;                                             ;       ;
+; Combinational ALUT usage for logic          ; 0     ;
+;     -- 7 input functions                    ; 0     ;
+;     -- 6 input functions                    ; 0     ;
+;     -- 5 input functions                    ; 0     ;
+;     -- 4 input functions                    ; 0     ;
+;     -- <=3 input functions                  ; 0     ;
+;                                             ;       ;
+; Dedicated logic registers                   ; 0     ;
+;                                             ;       ;
+; I/O pins                                    ; 2     ;
+;                                             ;       ;
+; Total DSP Blocks                            ; 0     ;
+;                                             ;       ;
+; Maximum fan-out node                        ; clk   ;
+; Maximum fan-out                             ; 1     ;
+; Total fan-out                               ; 2     ;
+; Average fan-out                             ; 0.50  ;
++---------------------------------------------+-------+
+
+
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                    ;
++----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+---------------------+-------------+--------------+
+; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name ; Entity Name ; Library Name ;
++----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+---------------------+-------------+--------------+
+; |cpu                       ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 2    ; 0            ; |cpu                ; cpu         ; work         ;
++----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+---------------------+-------------+--------------+
+Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
+
+
+Encoding Type:  One-Hot
++-----------------------------------------------------------------------------------+
+; State Machine - |cpu|fsm:CONTROL|state                                            ;
++---------------+-----------+---------------+--------------+-------------+----------+
+; Name          ; state.MEM ; state.EXECUTE ; state.DECODE ; state.FETCH ; state.WB ;
++---------------+-----------+---------------+--------------+-------------+----------+
+; state.FETCH   ; 0         ; 0             ; 0            ; 0           ; 0        ;
+; state.DECODE  ; 0         ; 0             ; 1            ; 1           ; 0        ;
+; state.EXECUTE ; 0         ; 1             ; 0            ; 1           ; 0        ;
+; state.MEM     ; 1         ; 0             ; 0            ; 1           ; 0        ;
+; state.WB      ; 0         ; 0             ; 0            ; 1           ; 1        ;
++---------------+-----------+---------------+--------------+-------------+----------+
+
+
++------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                           ;
++---------------------------------------+--------------------------------------+
+; Register name                         ; Reason for Removal                   ;
++---------------------------------------+--------------------------------------+
+; fsm:CONTROL|state~4                   ; Lost fanout                          ;
+; fsm:CONTROL|state~5                   ; Lost fanout                          ;
+; fsm:CONTROL|state.WB                  ; Stuck at GND due to stuck port clock ;
+; fsm:CONTROL|state.MEM                 ; Lost fanout                          ;
+; fsm:CONTROL|state.EXECUTE             ; Lost fanout                          ;
+; fsm:CONTROL|state.DECODE              ; Lost fanout                          ;
+; fsm:CONTROL|state.FETCH               ; Lost fanout                          ;
+; Total Number of Removed Registers = 7 ;                                      ;
++---------------------------------------+--------------------------------------+
+
+
++-----------------------------------------------------------------------------------------------------+
+; Removed Registers Triggering Further Register Optimizations                                         ;
++----------------------+-------------------------+----------------------------------------------------+
+; Register name        ; Reason for Removal      ; Registers Removed due to This Register             ;
++----------------------+-------------------------+----------------------------------------------------+
+; fsm:CONTROL|state~4  ; Lost Fanouts            ; fsm:CONTROL|state.EXECUTE, fsm:CONTROL|state.FETCH ;
+; fsm:CONTROL|state~5  ; Lost Fanouts            ; fsm:CONTROL|state.DECODE                           ;
+; fsm:CONTROL|state.WB ; Stuck at GND            ; fsm:CONTROL|state.MEM                              ;
+;                      ; due to stuck port clock ;                                                    ;
++----------------------+-------------------------+----------------------------------------------------+
+
+
++------------------------------------------------------+
+; General Register Statistics                          ;
++----------------------------------------------+-------+
+; Statistic                                    ; Value ;
++----------------------------------------------+-------+
+; Total registers                              ; 0     ;
+; Number of registers using Synchronous Clear  ; 0     ;
+; Number of registers using Synchronous Load   ; 0     ;
+; Number of registers using Asynchronous Clear ; 0     ;
+; Number of registers using Asynchronous Load  ; 0     ;
+; Number of registers using Clock Enable       ; 0     ;
+; Number of registers using Preset             ; 0     ;
++----------------------------------------------+-------+
+
+
++---------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: Top-level Entity: |cpu ;
++----------------+-------+--------------------------------------------+
+; Parameter Name ; Value ; Type                                       ;
++----------------+-------+--------------------------------------------+
+; WIDTH          ; 16    ; Signed Integer                             ;
+; DATA_WIDTH     ; 16    ; Signed Integer                             ;
+; REGADDR_W      ; 4     ; Signed Integer                             ;
+; IMEM_DEPTH     ; 256   ; Signed Integer                             ;
+; DMEM_DEPTH     ; 256   ; Signed Integer                             ;
++----------------+-------+--------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++----------------------------------------------------+
+; Parameter Settings for User Entity Instance: pc:PC ;
++----------------+-------+---------------------------+
+; Parameter Name ; Value ; Type                      ;
++----------------+-------+---------------------------+
+; WIDTH          ; 16    ; Signed Integer            ;
++----------------+-------+---------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: instr_mem:IMEM ;
++----------------+--------------------+-----------------------+
+; Parameter Name ; Value              ; Type                  ;
++----------------+--------------------+-----------------------+
+; ADDR_WIDTH     ; 8                  ; Signed Integer        ;
+; DATA_WIDTH     ; 16                 ; Signed Integer        ;
+; MEMFILE        ; IDM/instr_init.hex ; String                ;
++----------------+--------------------+-----------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++----------------------------------------------------------+
+; Parameter Settings for User Entity Instance: if_id:IF_ID ;
++----------------+-------+---------------------------------+
+; Parameter Name ; Value ; Type                            ;
++----------------+-------+---------------------------------+
+; PC_WIDTH       ; 16    ; Signed Integer                  ;
+; INSTR_WIDTH    ; 16    ; Signed Integer                  ;
++----------------+-------+---------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: imm_gen:IMM_GEN ;
++----------------+-------+-------------------------------------+
+; Parameter Name ; Value ; Type                                ;
++----------------+-------+-------------------------------------+
+; IN_WIDTH       ; 6     ; Signed Integer                      ;
+; OUT_WIDTH      ; 16    ; Signed Integer                      ;
++----------------+-------+-------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: regfile:ID_REGFILE ;
++----------------+-------+----------------------------------------+
+; Parameter Name ; Value ; Type                                   ;
++----------------+-------+----------------------------------------+
+; DATA_WIDTH     ; 16    ; Signed Integer                         ;
+; REGADDR_WIDTH  ; 4     ; Signed Integer                         ;
+; NUM_REGS       ; 16    ; Signed Integer                         ;
++----------------+-------+----------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++----------------------------------------------------------+
+; Parameter Settings for User Entity Instance: id_ex:ID_EX ;
++----------------+-------+---------------------------------+
+; Parameter Name ; Value ; Type                            ;
++----------------+-------+---------------------------------+
+; PC_WIDTH       ; 16    ; Signed Integer                  ;
+; DATA_WIDTH     ; 16    ; Signed Integer                  ;
+; REGADDR_WIDTH  ; 4     ; Signed Integer                  ;
++----------------+-------+---------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: forward:FORWARD_UNIT ;
++----------------+-------+------------------------------------------+
+; Parameter Name ; Value ; Type                                     ;
++----------------+-------+------------------------------------------+
+; REGADDR_WIDTH  ; 4     ; Signed Integer                           ;
++----------------+-------+------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------+
+; Parameter Settings for User Entity Instance: alu:ALU_I ;
++----------------+-------+-------------------------------+
+; Parameter Name ; Value ; Type                          ;
++----------------+-------+-------------------------------+
+; DATA_WIDTH     ; 16    ; Signed Integer                ;
++----------------+-------+-------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: ex_mem:EX_MEM ;
++----------------+-------+-----------------------------------+
+; Parameter Name ; Value ; Type                              ;
++----------------+-------+-----------------------------------+
+; PC_WIDTH       ; 16    ; Signed Integer                    ;
+; DATA_WIDTH     ; 16    ; Signed Integer                    ;
+; REGADDR_WIDTH  ; 4     ; Signed Integer                    ;
++----------------+-------+-----------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: data_mem:DMEM ;
++----------------+-------------------+-----------------------+
+; Parameter Name ; Value             ; Type                  ;
++----------------+-------------------+-----------------------+
+; ADDR_WIDTH     ; 8                 ; Signed Integer        ;
+; DATA_WIDTH     ; 16                ; Signed Integer        ;
+; MEMFILE        ; IDM/data_init.hex ; String                ;
++----------------+-------------------+-----------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: mem_wb:MEM_WB ;
++----------------+-------+-----------------------------------+
+; Parameter Name ; Value ; Type                              ;
++----------------+-------+-----------------------------------+
+; DATA_WIDTH     ; 16    ; Signed Integer                    ;
+; REGADDR_WIDTH  ; 4     ; Signed Integer                    ;
++----------------+-------+-----------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++----------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "ex_mem:EX_MEM"                                                                            ;
++------------+--------+----------+-------------------------------------------------------------------------------------+
+; Port       ; Type   ; Severity ; Details                                                                             ;
++------------+--------+----------+-------------------------------------------------------------------------------------+
+; mem_branch ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
+; mem_pc     ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
++------------+--------+----------+-------------------------------------------------------------------------------------+
+
+
++----------------------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "id_ex:ID_EX"                                                                                          ;
++------------------------+--------+----------+-------------------------------------------------------------------------------------+
+; Port                   ; Type   ; Severity ; Details                                                                             ;
++------------------------+--------+----------+-------------------------------------------------------------------------------------+
+; ex_is_str_reg_indirect ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
++------------------------+--------+----------+-------------------------------------------------------------------------------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "fsm:CONTROL"                                                                                                                                 ;
++-------+-------+----------+----------------------------------------------------------------------------------------------------------------------------------------------+
+; Port  ; Type  ; Severity ; Details                                                                                                                                      ;
++-------+-------+----------+----------------------------------------------------------------------------------------------------------------------------------------------+
+; clk   ; Input ; Warning  ; Declared by entity but not connected by instance. If a default value exists, it will be used.  Otherwise, the port will be connected to GND. ;
+; reset ; Input ; Warning  ; Declared by entity but not connected by instance. If a default value exists, it will be used.  Otherwise, the port will be connected to GND. ;
++-------+-------+----------+----------------------------------------------------------------------------------------------------------------------------------------------+
+
+
++-----------------------------------------------------+
+; Post-Synthesis Netlist Statistics for Top Partition ;
++-------------------+---------------------------------+
+; Type              ; Count                           ;
++-------------------+---------------------------------+
+; boundary_port     ; 2                               ;
+;                   ;                                 ;
+; Max LUT depth     ; 0.00                            ;
+; Average LUT depth ; 0.00                            ;
++-------------------+---------------------------------+
+
+
++-------------------------------+
+; Elapsed Time Per Partition    ;
++----------------+--------------+
+; Partition Name ; Elapsed Time ;
++----------------+--------------+
+; Top            ; 00:00:00     ;
++----------------+--------------+
+
+
++-------------------------------+
+; Analysis & Synthesis Messages ;
++-------------------------------+
+Info: *******************************************************************
+Info: Running Quartus Prime Analysis & Synthesis
+    Info: Version 22.1std.0 Build 915 10/25/2022 SC Lite Edition
+    Info: Processing started: Mon May 26 18:13:09 2025
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off Verilog-RISC-V-CPU -c Verilog-RISC-V-CPU
+Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
+Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
+Info (12021): Found 1 design units, including 1 entities, in source file tls/tb_cpu.v
+    Info (12023): Found entity 1: tb_cpu File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/tb_cpu.v Line: 3
+Info (12021): Found 1 design units, including 1 entities, in source file tls/fsm.v
+    Info (12023): Found entity 1: fsm File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/fsm.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file tls/cpu.v
+    Info (12023): Found entity 1: cpu File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 7
+Info (12021): Found 1 design units, including 1 entities, in source file reg/regfile.v
+    Info (12023): Found entity 1: regfile File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 5
+Info (12021): Found 1 design units, including 1 entities, in source file pip/mem_wb.v
+    Info (12023): Found entity 1: mem_wb File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 5
+Info (12021): Found 1 design units, including 1 entities, in source file pip/if_id.v
+    Info (12023): Found entity 1: if_id File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/if_id.v Line: 5
+Info (12021): Found 1 design units, including 1 entities, in source file pip/id_ex.v
+    Info (12023): Found entity 1: id_ex File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/id_ex.v Line: 5
+Info (12021): Found 1 design units, including 1 entities, in source file pip/ex_mem.v
+    Info (12023): Found entity 1: ex_mem File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/ex_mem.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file imgen/imm_gen.v
+    Info (12023): Found entity 1: imm_gen File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IMGEN/imm_gen.v Line: 5
+Info (12021): Found 1 design units, including 1 entities, in source file idm/instr_mem.v
+    Info (12023): Found entity 1: instr_mem File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/instr_mem.v Line: 8
+Info (12021): Found 1 design units, including 1 entities, in source file idm/data_mem.v
+    Info (12023): Found entity 1: data_mem File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/data_mem.v Line: 6
+Info (12021): Found 1 design units, including 1 entities, in source file hfu/hazard.v
+    Info (12023): Found entity 1: hazard File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/HFU/hazard.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file hfu/forward.v
+    Info (12023): Found entity 1: forward File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/HFU/forward.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file ccu/control.v
+    Info (12023): Found entity 1: control File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/CCU/control.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file bpc/pc.v
+    Info (12023): Found entity 1: pc File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/BPC/pc.v Line: 6
+Info (12021): Found 1 design units, including 1 entities, in source file alu/alu.v
+    Info (12023): Found entity 1: alu File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/ALU/ALU.v Line: 7
+Warning (10236): Verilog HDL Implicit Net warning at cpu.v(219): created implicit net for "ex_is_str_reg_indirect" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 219
+Info (12127): Elaborating entity "cpu" for the top level hierarchy
+Warning (10036): Verilog HDL or VHDL warning at cpu.v(78): object "is_jal" assigned a value but never read File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 78
+Warning (10036): Verilog HDL or VHDL warning at cpu.v(268): object "str_addr" assigned a value but never read File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 268
+Warning (10036): Verilog HDL or VHDL warning at cpu.v(284): object "alu_in2_reg" assigned a value but never read File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 284
+Warning (10230): Verilog HDL assignment warning at cpu.v(148): truncated value with size 32 to match size of target (16) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 148
+Warning (10230): Verilog HDL assignment warning at cpu.v(383): truncated value with size 32 to match size of target (16) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 383
+Info (10041): Inferred latch for "mem_read_data[0]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[1]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[2]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[3]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[4]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[5]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[6]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[7]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[8]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[9]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[10]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[11]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[12]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[13]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[14]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (10041): Inferred latch for "mem_read_data[15]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
+Info (12128): Elaborating entity "pc" for hierarchy "pc:PC" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 41
+Info (12128): Elaborating entity "instr_mem" for hierarchy "instr_mem:IMEM" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 51
+Warning (10030): Net "mem.data_a" at instr_mem.v(18) has no driver or initial value, using a default initial value '0' File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/instr_mem.v Line: 18
+Warning (10030): Net "mem.waddr_a" at instr_mem.v(18) has no driver or initial value, using a default initial value '0' File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/instr_mem.v Line: 18
+Warning (10030): Net "mem.we_a" at instr_mem.v(18) has no driver or initial value, using a default initial value '0' File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/instr_mem.v Line: 18
+Info (12128): Elaborating entity "if_id" for hierarchy "if_id:IF_ID" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 67
+Info (12128): Elaborating entity "imm_gen" for hierarchy "imm_gen:IMM_GEN" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 96
+Info (12128): Elaborating entity "fsm" for hierarchy "fsm:CONTROL" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 112
+Info (12128): Elaborating entity "regfile" for hierarchy "regfile:ID_REGFILE" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 144
+Info (10648): Verilog HDL Display System Task info at regfile.v(46): Final register file contents: File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 46
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r0 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r1 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r2 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r3 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r4 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r5 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r6 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r7 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r8 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r9 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r10 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r11 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r12 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r13 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r14 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (10648): Verilog HDL Display System Task info at regfile.v(48): r15 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
+Info (12128): Elaborating entity "id_ex" for hierarchy "id_ex:ID_EX" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 222
+Info (12128): Elaborating entity "hazard" for hierarchy "hazard:HAZARD_UNIT" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 240
+Info (12128): Elaborating entity "forward" for hierarchy "forward:FORWARD_UNIT" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 253
+Info (12128): Elaborating entity "alu" for hierarchy "alu:ALU_I" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 295
+Info (12128): Elaborating entity "ex_mem" for hierarchy "ex_mem:EX_MEM" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 333
+Info (12128): Elaborating entity "data_mem" for hierarchy "data_mem:DMEM" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 350
+Info (12128): Elaborating entity "mem_wb" for hierarchy "mem_wb:MEM_WB" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 380
+Warning (12241): 1 hierarchies have connectivity warnings - see the Connectivity Checks report folder
+Info (17049): 6 registers lost all their fanouts during netlist optimizations.
+Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
+    Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
+Warning (21074): Design contains 2 input pin(s) that do not drive logic
+    Warning (15610): No output dependent on input pin "clk" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 14
+    Warning (15610): No output dependent on input pin "reset" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 16
+Info (21057): Implemented 2 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 2 input pins
+    Info (21059): Implemented 0 output pins
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 14 warnings
+    Info: Peak virtual memory: 4828 megabytes
+    Info: Processing ended: Mon May 26 18:13:17 2025
+    Info: Elapsed time: 00:00:08
+    Info: Total CPU time (on all processors): 00:00:18
+
+

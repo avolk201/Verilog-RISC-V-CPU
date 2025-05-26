@@ -37,5 +37,15 @@ module regfile #(
       regs[write_reg] <= write_data;
     end
   end
+  
+  //DEBUGGING
+	integer j;
+  
+   initial begin
+		 #5000; // same as your testbench end time
+		 $display("Final register file contents:");
+		 for (j = 0; j < NUM_REGS; j = j + 1)
+			$display("r%0d = %0d", j, regs[j]);
+	end
 
 endmodule

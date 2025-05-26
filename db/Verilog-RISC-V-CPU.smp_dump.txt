@@ -1,0 +1,8 @@
+
+State Machine - |cpu|fsm:CONTROL|state
+Name state.MEM state.EXECUTE state.DECODE state.FETCH state.WB 
+state.FETCH 0 0 0 0 0 
+state.DECODE 0 0 1 1 0 
+state.EXECUTE 0 1 0 1 0 
+state.MEM 1 0 0 1 0 
+state.WB 0 0 0 1 1 

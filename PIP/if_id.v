@@ -16,13 +16,17 @@ module if_id #(
     output reg [INSTR_WIDTH-1:0] id_instr
 );
     always @(posedge clk or posedge reset) begin
-        if (reset || flush) begin
-            id_pc    <= {PC_WIDTH{1'b0}};
-            id_instr <= {INSTR_WIDTH{1'b0}};
-        end else if (!stall) begin
-            id_pc    <= if_pc;
-            id_instr <= if_instr;
-        end
-        // else hold previous values
-    end
+		 if (reset) begin
+			  id_pc    <= {PC_WIDTH{1'b0}};
+			  id_instr <= {INSTR_WIDTH{1'b0}};
+		 end else if (flush) begin
+			  id_pc    <= {PC_WIDTH{1'b0}};
+			  id_instr <= {INSTR_WIDTH{1'b0}};
+		 end else if (!stall) begin
+			  id_pc    <= if_pc;
+			  id_instr <= if_instr;
+		 end
+		 // else: hold previous value (do nothing)
+	end
+
 endmodule

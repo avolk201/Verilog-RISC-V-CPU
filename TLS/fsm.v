@@ -14,15 +14,14 @@ module fsm (
 );
 
     // FSM states
-    typedef enum reg [2:0] {
-        FETCH   = 3'b000,
-        DECODE  = 3'b001,
-        EXECUTE = 3'b010,
-        MEM     = 3'b011,
-        WB      = 3'b100
-    } state_t;
+	localparam FETCH   = 3'b000,
+				  DECODE  = 3'b001,
+              EXECUTE = 3'b010,
+              MEM     = 3'b011,
+              WB      = 3'b100;
 
-    state_t state, next_state;
+	reg [2:0] state, next_state;
+
 
     // State transition logic
     always @(posedge clk or posedge reset) begin
