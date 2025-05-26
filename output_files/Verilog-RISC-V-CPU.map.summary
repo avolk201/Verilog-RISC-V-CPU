@@ -1,14 +1,14 @@
-Analysis & Synthesis Status : Successful - Mon May 26 18:13:17 2025
+Analysis & Synthesis Status : Successful - Mon May 26 19:31:45 2025
 Quartus Prime Version : 22.1std.0 Build 915 10/25/2022 SC Lite Edition
 Revision Name : Verilog-RISC-V-CPU
 Top-level Entity Name : cpu
 Family : Cyclone V
 Logic utilization (in ALMs) : N/A
-Total registers : 0
-Total pins : 2
+Total registers : 4577
+Total pins : 22
 Total virtual pins : 0
 Total block memory bits : 0
-Total DSP Blocks : 0
+Total DSP Blocks : 1
 Total HSSI RX PCSs : 0
 Total HSSI PMA RX Deserializers : 0
 Total HSSI TX PCSs : 0

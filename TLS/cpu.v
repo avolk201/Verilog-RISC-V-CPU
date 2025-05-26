@@ -355,7 +355,6 @@ data_mem #(
 );
 
 // Pass the correct value to the memory write data
-assign mem_write_data = mem_alu_result; // Value from the source register (e.g., R1)
 assign mem_read_data = (mem_mem_read) ? mem_read_data : {DATA_WIDTH{1'bz}};
 
 // MEM/WB pipeline register

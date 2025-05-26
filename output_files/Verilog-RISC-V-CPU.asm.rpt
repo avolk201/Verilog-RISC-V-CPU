@@ -1,5 +1,5 @@
 Assembler report for Verilog-RISC-V-CPU
-Mon May 26 18:14:01 2025
+Mon May 26 19:34:47 2025
 Quartus Prime Version 22.1std.0 Build 915 10/25/2022 SC Lite Edition
 
 
@@ -38,7 +38,7 @@ https://fpgasoftware.intel.com/eula.
 +---------------------------------------------------------------+
 ; Assembler Summary                                             ;
 +-----------------------+---------------------------------------+
-; Assembler Status      ; Successful - Mon May 26 18:14:01 2025 ;
+; Assembler Status      ; Successful - Mon May 26 19:34:47 2025 ;
 ; Revision Name         ; Verilog-RISC-V-CPU                    ;
 ; Top-level Entity Name ; cpu                                   ;
 ; Family                ; Cyclone V                             ;
@@ -67,8 +67,8 @@ https://fpgasoftware.intel.com/eula.
 +----------------+--------------------------------------------------------------------------------------------+
 ; Option         ; Setting                                                                                    ;
 +----------------+--------------------------------------------------------------------------------------------+
-; JTAG usercode  ; 0x00AF4BAA                                                                                 ;
-; Checksum       ; 0x00AF4BAA                                                                                 ;
+; JTAG usercode  ; 0x010F3338                                                                                 ;
+; Checksum       ; 0x010F3338                                                                                 ;
 +----------------+--------------------------------------------------------------------------------------------+
 
 
@@ -78,14 +78,14 @@ https://fpgasoftware.intel.com/eula.
 Info: *******************************************************************
 Info: Running Quartus Prime Assembler
     Info: Version 22.1std.0 Build 915 10/25/2022 SC Lite Edition
-    Info: Processing started: Mon May 26 18:13:50 2025
+    Info: Processing started: Mon May 26 19:34:37 2025
 Info: Command: quartus_asm --read_settings_files=off --write_settings_files=off Verilog-RISC-V-CPU -c Verilog-RISC-V-CPU
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (115030): Assembler is generating device programming files
 Info: Quartus Prime Assembler was successful. 0 errors, 1 warning
-    Info: Peak virtual memory: 5237 megabytes
-    Info: Processing ended: Mon May 26 18:14:01 2025
-    Info: Elapsed time: 00:00:11
-    Info: Total CPU time (on all processors): 00:00:06
+    Info: Peak virtual memory: 5285 megabytes
+    Info: Processing ended: Mon May 26 19:34:47 2025
+    Info: Elapsed time: 00:00:10
+    Info: Total CPU time (on all processors): 00:00:10
 
 

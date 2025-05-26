@@ -2,7 +2,96 @@
 	"partitions" : [
 		{
 			"name" : "Top",
-			"pins" : []
+			"pins" : [
+				{
+					"name" : "debug_data[0]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[1]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[2]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[3]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[4]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[5]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[6]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[7]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[8]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[9]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[10]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[11]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[12]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[13]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[14]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_data[15]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_addr[0]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_addr[1]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_addr[2]",
+					"strict" : false
+				},
+				{
+					"name" : "debug_addr[3]",
+					"strict" : false
+				},
+				{
+					"name" : "clk",
+					"strict" : false
+				},
+				{
+					"name" : "reset",
+					"strict" : false
+				}
+			]
 		}
 	]
 }

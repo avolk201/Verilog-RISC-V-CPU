@@ -56,25 +56,6 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name VERILOG_FILE TLS/tb_cpu.v
-set_global_assignment -name HEX_FILE IDM/instr_init.hex
-set_global_assignment -name HEX_FILE IDM/data_init.hex
-set_global_assignment -name VERILOG_FILE TLS/fsm.v
-set_global_assignment -name VERILOG_FILE TLS/cpu.v
-set_global_assignment -name VERILOG_FILE REG/regfile.v
-set_global_assignment -name VERILOG_FILE PIP/mem_wb.v
-set_global_assignment -name VERILOG_FILE PIP/if_id.v
-set_global_assignment -name VERILOG_FILE PIP/id_ex.v
-set_global_assignment -name VERILOG_FILE PIP/ex_mem.v
-set_global_assignment -name VERILOG_FILE IMGEN/imm_gen.v
-set_global_assignment -name VERILOG_FILE IDM/instr_mem.v
-set_global_assignment -name VERILOG_FILE IDM/data_mem.v
-set_global_assignment -name VERILOG_FILE HFU/hazard.v
-set_global_assignment -name VERILOG_FILE HFU/forward.v
-set_global_assignment -name VERILOG_FILE CCU/control.v
-set_global_assignment -name VERILOG_FILE BPC/pc.v
-set_global_assignment -name VERILOG_FILE ALU/ALU.v
-set_global_assignment -name SOURCE_FILE "db/Verilog-RISC-V-CPU.cmp.rdb"
 set_global_assignment -name EDA_BOARD_DESIGN_TIMING_TOOL "Stamp (Timing)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT STAMP -section_id eda_board_design_timing
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
@@ -104,4 +85,27 @@ set_global_assignment -name EDA_TEST_BENCH_FILE TLS/tb_cpu.v -section_id tb_cpu.
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VERILOG_FILE TLS/binary_to_7Seg.v
+set_global_assignment -name VERILOG_FILE instatiate.v
+set_global_assignment -name VERILOG_FILE TLS/tb_cpu.v
+set_global_assignment -name HEX_FILE IDM/instr_init.hex
+set_global_assignment -name HEX_FILE IDM/data_init.hex
+set_global_assignment -name VERILOG_FILE TLS/fsm.v
+set_global_assignment -name VERILOG_FILE TLS/cpu.v
+set_global_assignment -name VERILOG_FILE REG/regfile.v
+set_global_assignment -name VERILOG_FILE PIP/mem_wb.v
+set_global_assignment -name VERILOG_FILE PIP/if_id.v
+set_global_assignment -name VERILOG_FILE PIP/id_ex.v
+set_global_assignment -name VERILOG_FILE PIP/ex_mem.v
+set_global_assignment -name VERILOG_FILE IMGEN/imm_gen.v
+set_global_assignment -name VERILOG_FILE IDM/instr_mem.v
+set_global_assignment -name VERILOG_FILE IDM/data_mem.v
+set_global_assignment -name VERILOG_FILE HFU/hazard.v
+set_global_assignment -name VERILOG_FILE HFU/forward.v
+set_global_assignment -name VERILOG_FILE CCU/control.v
+set_global_assignment -name VERILOG_FILE BPC/pc.v
+set_global_assignment -name VERILOG_FILE ALU/ALU.v
+set_global_assignment -name SOURCE_FILE "db/Verilog-RISC-V-CPU.cmp.rdb"
+set_global_assignment -name VERILOG_FILE bin2bcd16.v
+set_global_assignment -name VERILOG_FILE decoder.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

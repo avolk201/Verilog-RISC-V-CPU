@@ -1,0 +1,28 @@
+module decoder (
+    input  [15:0] v,       // 16‐bit binary
+    output [6:0] seg4,
+    output [6:0] seg3,
+    output [6:0] seg2,
+    output [6:0] seg1,
+    output [6:0] seg0
+);
+
+    //----- convert binary→5×BCD digits -----
+    wire [3:0] bcd4, bcd3, bcd2, bcd1, bcd0;
+    bin2bcd16 conv (
+        .binary(v),
+        .bcd4  (bcd4),
+        .bcd3  (bcd3),
+        .bcd2  (bcd2),
+        .bcd1  (bcd1),
+        .bcd0  (bcd0)
+    );
+
+    //----- drive each BCD digit to 7‐seg decoder -----
+    binary_to_7Seg d4(.binary(bcd4), .sevenSeg(seg4));
+    binary_to_7Seg d3(.binary(bcd3), .sevenSeg(seg3));
+    binary_to_7Seg d2(.binary(bcd2), .sevenSeg(seg2));
+    binary_to_7Seg d1(.binary(bcd1), .sevenSeg(seg1));
+    binary_to_7Seg d0(.binary(bcd0), .sevenSeg(seg0));
+
+endmodule

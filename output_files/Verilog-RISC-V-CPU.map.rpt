@@ -1,5 +1,5 @@
 Analysis & Synthesis report for Verilog-RISC-V-CPU
-Mon May 26 18:13:17 2025
+Mon May 26 19:31:45 2025
 Quartus Prime Version 22.1std.0 Build 915 10/25/2022 SC Lite Edition
 
 
@@ -13,28 +13,31 @@ Quartus Prime Version 22.1std.0 Build 915 10/25/2022 SC Lite Edition
   5. Analysis & Synthesis Source Files Read
   6. Analysis & Synthesis Resource Usage Summary
   7. Analysis & Synthesis Resource Utilization by Entity
-  8. State Machine - |cpu|fsm:CONTROL|state
-  9. Registers Removed During Synthesis
- 10. Removed Registers Triggering Further Register Optimizations
- 11. General Register Statistics
- 12. Parameter Settings for User Entity Instance: Top-level Entity: |cpu
- 13. Parameter Settings for User Entity Instance: pc:PC
- 14. Parameter Settings for User Entity Instance: instr_mem:IMEM
- 15. Parameter Settings for User Entity Instance: if_id:IF_ID
- 16. Parameter Settings for User Entity Instance: imm_gen:IMM_GEN
- 17. Parameter Settings for User Entity Instance: regfile:ID_REGFILE
- 18. Parameter Settings for User Entity Instance: id_ex:ID_EX
- 19. Parameter Settings for User Entity Instance: forward:FORWARD_UNIT
- 20. Parameter Settings for User Entity Instance: alu:ALU_I
- 21. Parameter Settings for User Entity Instance: ex_mem:EX_MEM
- 22. Parameter Settings for User Entity Instance: data_mem:DMEM
- 23. Parameter Settings for User Entity Instance: mem_wb:MEM_WB
- 24. Port Connectivity Checks: "ex_mem:EX_MEM"
- 25. Port Connectivity Checks: "id_ex:ID_EX"
- 26. Port Connectivity Checks: "fsm:CONTROL"
- 27. Post-Synthesis Netlist Statistics for Top Partition
- 28. Elapsed Time Per Partition
- 29. Analysis & Synthesis Messages
+  8. Analysis & Synthesis DSP Block Usage Summary
+  9. State Machine - |cpu|fsm:CONTROL|state
+ 10. Registers Removed During Synthesis
+ 11. Removed Registers Triggering Further Register Optimizations
+ 12. General Register Statistics
+ 13. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 14. Parameter Settings for User Entity Instance: Top-level Entity: |cpu
+ 15. Parameter Settings for User Entity Instance: pc:PC
+ 16. Parameter Settings for User Entity Instance: instr_mem:IMEM
+ 17. Parameter Settings for User Entity Instance: if_id:IF_ID
+ 18. Parameter Settings for User Entity Instance: imm_gen:IMM_GEN
+ 19. Parameter Settings for User Entity Instance: regfile:ID_REGFILE
+ 20. Parameter Settings for User Entity Instance: id_ex:ID_EX
+ 21. Parameter Settings for User Entity Instance: forward:FORWARD_UNIT
+ 22. Parameter Settings for User Entity Instance: alu:ALU_I
+ 23. Parameter Settings for User Entity Instance: ex_mem:EX_MEM
+ 24. Parameter Settings for User Entity Instance: data_mem:DMEM
+ 25. Parameter Settings for User Entity Instance: mem_wb:MEM_WB
+ 26. Parameter Settings for Inferred Entity Instance: alu:ALU_I|lpm_divide:Div0
+ 27. Port Connectivity Checks: "ex_mem:EX_MEM"
+ 28. Port Connectivity Checks: "id_ex:ID_EX"
+ 29. Port Connectivity Checks: "fsm:CONTROL"
+ 30. Post-Synthesis Netlist Statistics for Top Partition
+ 31. Elapsed Time Per Partition
+ 32. Analysis & Synthesis Messages
 
 
 
@@ -61,17 +64,17 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +---------------------------------+------------------------------------------------+
-; Analysis & Synthesis Status     ; Successful - Mon May 26 18:13:17 2025          ;
+; Analysis & Synthesis Status     ; Successful - Mon May 26 19:31:45 2025          ;
 ; Quartus Prime Version           ; 22.1std.0 Build 915 10/25/2022 SC Lite Edition ;
 ; Revision Name                   ; Verilog-RISC-V-CPU                             ;
 ; Top-level Entity Name           ; cpu                                            ;
 ; Family                          ; Cyclone V                                      ;
 ; Logic utilization (in ALMs)     ; N/A                                            ;
-; Total registers                 ; 0                                              ;
-; Total pins                      ; 2                                              ;
+; Total registers                 ; 4577                                           ;
+; Total pins                      ; 22                                             ;
 ; Total virtual pins              ; 0                                              ;
 ; Total block memory bits         ; 0                                              ;
-; Total DSP Blocks                ; 0                                              ;
+; Total DSP Blocks                ; 1                                              ;
 ; Total HSSI RX PCSs              ; 0                                              ;
 ; Total HSSI PMA RX Deserializers ; 0                                              ;
 ; Total HSSI TX PCSs              ; 0                                              ;
@@ -177,70 +180,108 @@ https://fpgasoftware.intel.com/eula.
 ; Maximum allowed            ; 4           ;
 ;                            ;             ;
 ; Average used               ; 1.00        ;
-; Maximum used               ; 1           ;
+; Maximum used               ; 4           ;
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
+;     Processor 2            ;   0.1%      ;
+;     Processor 3            ;   0.1%      ;
+;     Processor 4            ;   0.0%      ;
 +----------------------------+-------------+
 
 
-+-------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Source Files Read                                                                                                                ;
-+----------------------------------+-----------------+------------------------+---------------------------------------------------------------+---------+
-; File Name with User-Entered Path ; Used in Netlist ; File Type              ; File Name with Absolute Path                                  ; Library ;
-+----------------------------------+-----------------+------------------------+---------------------------------------------------------------+---------+
-; TLS/fsm.v                        ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/fsm.v       ;         ;
-; TLS/cpu.v                        ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v       ;         ;
-; REG/regfile.v                    ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v   ;         ;
-; PIP/mem_wb.v                     ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v    ;         ;
-; PIP/if_id.v                      ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/if_id.v     ;         ;
-; PIP/id_ex.v                      ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/id_ex.v     ;         ;
-; PIP/ex_mem.v                     ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/ex_mem.v    ;         ;
-; IMGEN/imm_gen.v                  ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IMGEN/imm_gen.v ;         ;
-; IDM/instr_mem.v                  ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/instr_mem.v ;         ;
-; IDM/data_mem.v                   ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/data_mem.v  ;         ;
-; HFU/hazard.v                     ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/HFU/hazard.v    ;         ;
-; HFU/forward.v                    ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/HFU/forward.v   ;         ;
-; BPC/pc.v                         ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/BPC/pc.v        ;         ;
-; ALU/ALU.v                        ; yes             ; User Verilog HDL File  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/ALU/ALU.v       ;         ;
-+----------------------------------+-----------------+------------------------+---------------------------------------------------------------+---------+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                                                      ;
++----------------------------------+-----------------+------------------------------+-------------------------------------------------------------------------------+---------+
+; File Name with User-Entered Path ; Used in Netlist ; File Type                    ; File Name with Absolute Path                                                  ; Library ;
++----------------------------------+-----------------+------------------------------+-------------------------------------------------------------------------------+---------+
+; TLS/fsm.v                        ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/fsm.v                       ;         ;
+; TLS/cpu.v                        ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v                       ;         ;
+; REG/regfile.v                    ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v                   ;         ;
+; PIP/mem_wb.v                     ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v                    ;         ;
+; PIP/if_id.v                      ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/if_id.v                     ;         ;
+; PIP/id_ex.v                      ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/id_ex.v                     ;         ;
+; PIP/ex_mem.v                     ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/ex_mem.v                    ;         ;
+; IMGEN/imm_gen.v                  ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IMGEN/imm_gen.v                 ;         ;
+; IDM/instr_mem.v                  ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/instr_mem.v                 ;         ;
+; IDM/data_mem.v                   ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/data_mem.v                  ;         ;
+; HFU/hazard.v                     ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/HFU/hazard.v                    ;         ;
+; HFU/forward.v                    ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/HFU/forward.v                   ;         ;
+; BPC/pc.v                         ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/BPC/pc.v                        ;         ;
+; ALU/ALU.v                        ; yes             ; User Verilog HDL File        ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/ALU/ALU.v                       ;         ;
+; lpm_divide.tdf                   ; yes             ; Megafunction                 ; c:/intelfpga_lite/22.1std/quartus/libraries/megafunctions/lpm_divide.tdf      ;         ;
+; abs_divider.inc                  ; yes             ; Megafunction                 ; c:/intelfpga_lite/22.1std/quartus/libraries/megafunctions/abs_divider.inc     ;         ;
+; sign_div_unsign.inc              ; yes             ; Megafunction                 ; c:/intelfpga_lite/22.1std/quartus/libraries/megafunctions/sign_div_unsign.inc ;         ;
+; aglobal221.inc                   ; yes             ; Megafunction                 ; c:/intelfpga_lite/22.1std/quartus/libraries/megafunctions/aglobal221.inc      ;         ;
+; db/lpm_divide_7dm.tdf            ; yes             ; Auto-Generated Megafunction  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/db/lpm_divide_7dm.tdf           ;         ;
+; db/sign_div_unsign_dnh.tdf       ; yes             ; Auto-Generated Megafunction  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/db/sign_div_unsign_dnh.tdf      ;         ;
+; db/alt_u_div_03f.tdf             ; yes             ; Auto-Generated Megafunction  ; C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/db/alt_u_div_03f.tdf            ;         ;
++----------------------------------+-----------------+------------------------------+-------------------------------------------------------------------------------+---------+
 
 
-+-----------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary         ;
-+---------------------------------------------+-------+
-; Resource                                    ; Usage ;
-+---------------------------------------------+-------+
-; Estimate of Logic utilization (ALMs needed) ; 0     ;
-;                                             ;       ;
-; Combinational ALUT usage for logic          ; 0     ;
-;     -- 7 input functions                    ; 0     ;
-;     -- 6 input functions                    ; 0     ;
-;     -- 5 input functions                    ; 0     ;
-;     -- 4 input functions                    ; 0     ;
-;     -- <=3 input functions                  ; 0     ;
-;                                             ;       ;
-; Dedicated logic registers                   ; 0     ;
-;                                             ;       ;
-; I/O pins                                    ; 2     ;
-;                                             ;       ;
-; Total DSP Blocks                            ; 0     ;
-;                                             ;       ;
-; Maximum fan-out node                        ; clk   ;
-; Maximum fan-out                             ; 1     ;
-; Total fan-out                               ; 2     ;
-; Average fan-out                             ; 0.50  ;
-+---------------------------------------------+-------+
++---------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary             ;
++---------------------------------------------+-----------+
+; Resource                                    ; Usage     ;
++---------------------------------------------+-----------+
+; Estimate of Logic utilization (ALMs needed) ; 3324      ;
+;                                             ;           ;
+; Combinational ALUT usage for logic          ; 2519      ;
+;     -- 7 input functions                    ; 4         ;
+;     -- 6 input functions                    ; 1736      ;
+;     -- 5 input functions                    ; 292       ;
+;     -- 4 input functions                    ; 379       ;
+;     -- <=3 input functions                  ; 108       ;
+;                                             ;           ;
+; Dedicated logic registers                   ; 4577      ;
+;                                             ;           ;
+; I/O pins                                    ; 22        ;
+;                                             ;           ;
+; Total DSP Blocks                            ; 1         ;
+;                                             ;           ;
+; Maximum fan-out node                        ; clk~input ;
+; Maximum fan-out                             ; 4577      ;
+; Total fan-out                               ; 28016     ;
+; Average fan-out                             ; 3.92      ;
++---------------------------------------------+-----------+
 
 
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                    ;
-+----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+---------------------+-------------+--------------+
-; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name ; Entity Name ; Library Name ;
-+----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+---------------------+-------------+--------------+
-; |cpu                       ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 2    ; 0            ; |cpu                ; cpu         ; work         ;
-+----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+---------------------+-------------+--------------+
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                                                                                      ;
++-------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+----------------------------------------------------------------------------------------------------------------+---------------------+--------------+
+; Compilation Hierarchy Node                ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                                                                                            ; Entity Name         ; Library Name ;
++-------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+----------------------------------------------------------------------------------------------------------------+---------------------+--------------+
+; |cpu                                      ; 2519 (159)          ; 4577 (0)                  ; 0                 ; 1          ; 22   ; 0            ; |cpu                                                                                                           ; cpu                 ; work         ;
+;    |alu:ALU_I|                            ; 361 (59)            ; 0 (0)                     ; 0                 ; 1          ; 0    ; 0            ; |cpu|alu:ALU_I                                                                                                 ; alu                 ; work         ;
+;       |lpm_divide:Div0|                   ; 302 (0)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |cpu|alu:ALU_I|lpm_divide:Div0                                                                                 ; lpm_divide          ; work         ;
+;          |lpm_divide_7dm:auto_generated|  ; 302 (0)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |cpu|alu:ALU_I|lpm_divide:Div0|lpm_divide_7dm:auto_generated                                                   ; lpm_divide_7dm      ; work         ;
+;             |sign_div_unsign_dnh:divider| ; 302 (0)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |cpu|alu:ALU_I|lpm_divide:Div0|lpm_divide_7dm:auto_generated|sign_div_unsign_dnh:divider                       ; sign_div_unsign_dnh ; work         ;
+;                |alt_u_div_03f:divider|    ; 302 (302)           ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |cpu|alu:ALU_I|lpm_divide:Div0|lpm_divide_7dm:auto_generated|sign_div_unsign_dnh:divider|alt_u_div_03f:divider ; alt_u_div_03f       ; work         ;
+;    |data_mem:DMEM|                        ; 1680 (1680)         ; 4096 (4096)               ; 0                 ; 0          ; 0    ; 0            ; |cpu|data_mem:DMEM                                                                                             ; data_mem            ; work         ;
+;    |ex_mem:EX_MEM|                        ; 0 (0)               ; 56 (56)                   ; 0                 ; 0          ; 0    ; 0            ; |cpu|ex_mem:EX_MEM                                                                                             ; ex_mem              ; work         ;
+;    |forward:FORWARD_UNIT|                 ; 6 (6)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |cpu|forward:FORWARD_UNIT                                                                                      ; forward             ; work         ;
+;    |fsm:CONTROL|                          ; 9 (9)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |cpu|fsm:CONTROL                                                                                               ; fsm                 ; work         ;
+;    |hazard:HAZARD_UNIT|                   ; 2 (2)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |cpu|hazard:HAZARD_UNIT                                                                                        ; hazard              ; work         ;
+;    |id_ex:ID_EX|                          ; 80 (80)             ; 67 (67)                   ; 0                 ; 0          ; 0    ; 0            ; |cpu|id_ex:ID_EX                                                                                               ; id_ex               ; work         ;
+;    |if_id:IF_ID|                          ; 2 (2)               ; 31 (31)                   ; 0                 ; 0          ; 0    ; 0            ; |cpu|if_id:IF_ID                                                                                               ; if_id               ; work         ;
+;    |instr_mem:IMEM|                       ; 16 (16)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |cpu|instr_mem:IMEM                                                                                            ; instr_mem           ; work         ;
+;    |mem_wb:MEM_WB|                        ; 0 (0)               ; 55 (55)                   ; 0                 ; 0          ; 0    ; 0            ; |cpu|mem_wb:MEM_WB                                                                                             ; mem_wb              ; work         ;
+;    |pc:PC|                                ; 7 (7)               ; 16 (16)                   ; 0                 ; 0          ; 0    ; 0            ; |cpu|pc:PC                                                                                                     ; pc                  ; work         ;
+;    |regfile:ID_REGFILE|                   ; 197 (197)           ; 256 (256)                 ; 0                 ; 0          ; 0    ; 0            ; |cpu|regfile:ID_REGFILE                                                                                        ; regfile             ; work         ;
++-------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+----------------------------------------------------------------------------------------------------------------+---------------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
+
+
++-----------------------------------------------+
+; Analysis & Synthesis DSP Block Usage Summary  ;
++---------------------------------+-------------+
+; Statistic                       ; Number Used ;
++---------------------------------+-------------+
+; Two Independent 18x18           ; 1           ;
+; Total number of DSP blocks      ; 1           ;
+;                                 ;             ;
+; Fixed Point Unsigned Multiplier ; 1           ;
++---------------------------------+-------------+
 
 
 Encoding Type:  One-Hot
@@ -257,32 +298,43 @@ Encoding Type:  One-Hot
 +---------------+-----------+---------------+--------------+-------------+----------+
 
 
-+------------------------------------------------------------------------------+
-; Registers Removed During Synthesis                                           ;
-+---------------------------------------+--------------------------------------+
-; Register name                         ; Reason for Removal                   ;
-+---------------------------------------+--------------------------------------+
-; fsm:CONTROL|state~4                   ; Lost fanout                          ;
-; fsm:CONTROL|state~5                   ; Lost fanout                          ;
-; fsm:CONTROL|state.WB                  ; Stuck at GND due to stuck port clock ;
-; fsm:CONTROL|state.MEM                 ; Lost fanout                          ;
-; fsm:CONTROL|state.EXECUTE             ; Lost fanout                          ;
-; fsm:CONTROL|state.DECODE              ; Lost fanout                          ;
-; fsm:CONTROL|state.FETCH               ; Lost fanout                          ;
-; Total Number of Removed Registers = 7 ;                                      ;
-+---------------------------------------+--------------------------------------+
++---------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                              ;
++----------------------------------------+----------------------------------------+
+; Register name                          ; Reason for Removal                     ;
++----------------------------------------+----------------------------------------+
+; id_ex:ID_EX|ex_imm_ext[5..9,11..15]    ; Merged with id_ex:ID_EX|ex_imm_ext[10] ;
+; id_ex:ID_EX|ex_rs[1]                   ; Merged with id_ex:ID_EX|ex_imm_ext[10] ;
+; id_ex:ID_EX|ex_rs[0]                   ; Merged with id_ex:ID_EX|ex_imm_ext[4]  ;
+; id_ex:ID_EX|ex_rt[3]                   ; Merged with id_ex:ID_EX|ex_imm_ext[3]  ;
+; id_ex:ID_EX|ex_rt[2]                   ; Merged with id_ex:ID_EX|ex_imm_ext[2]  ;
+; id_ex:ID_EX|ex_rt[1]                   ; Merged with id_ex:ID_EX|ex_imm_ext[1]  ;
+; id_ex:ID_EX|ex_rt[0]                   ; Merged with id_ex:ID_EX|ex_imm_ext[0]  ;
+; if_id:IF_ID|id_instr[5]                ; Stuck at GND due to stuck port data_in ;
+; id_ex:ID_EX|ex_imm_ext[10]             ; Stuck at GND due to stuck port data_in ;
+; fsm:CONTROL|state~4                    ; Lost fanout                            ;
+; fsm:CONTROL|state~5                    ; Lost fanout                            ;
+; fsm:CONTROL|state.WB                   ; Stuck at GND due to stuck port clock   ;
+; fsm:CONTROL|state.MEM                  ; Lost fanout                            ;
+; fsm:CONTROL|state.EXECUTE              ; Lost fanout                            ;
+; fsm:CONTROL|state.DECODE               ; Lost fanout                            ;
+; fsm:CONTROL|state.FETCH                ; Lost fanout                            ;
+; Total Number of Removed Registers = 25 ;                                        ;
++----------------------------------------+----------------------------------------+
 
 
-+-----------------------------------------------------------------------------------------------------+
-; Removed Registers Triggering Further Register Optimizations                                         ;
-+----------------------+-------------------------+----------------------------------------------------+
-; Register name        ; Reason for Removal      ; Registers Removed due to This Register             ;
-+----------------------+-------------------------+----------------------------------------------------+
-; fsm:CONTROL|state~4  ; Lost Fanouts            ; fsm:CONTROL|state.EXECUTE, fsm:CONTROL|state.FETCH ;
-; fsm:CONTROL|state~5  ; Lost Fanouts            ; fsm:CONTROL|state.DECODE                           ;
-; fsm:CONTROL|state.WB ; Stuck at GND            ; fsm:CONTROL|state.MEM                              ;
-;                      ; due to stuck port clock ;                                                    ;
-+----------------------+-------------------------+----------------------------------------------------+
++----------------------------------------------------------------------------------------------------------+
+; Removed Registers Triggering Further Register Optimizations                                              ;
++-------------------------+---------------------------+----------------------------------------------------+
+; Register name           ; Reason for Removal        ; Registers Removed due to This Register             ;
++-------------------------+---------------------------+----------------------------------------------------+
+; fsm:CONTROL|state~4     ; Lost Fanouts              ; fsm:CONTROL|state.EXECUTE, fsm:CONTROL|state.FETCH ;
+; if_id:IF_ID|id_instr[5] ; Stuck at GND              ; id_ex:ID_EX|ex_imm_ext[10]                         ;
+;                         ; due to stuck port data_in ;                                                    ;
+; fsm:CONTROL|state~5     ; Lost Fanouts              ; fsm:CONTROL|state.DECODE                           ;
+; fsm:CONTROL|state.WB    ; Stuck at GND              ; fsm:CONTROL|state.MEM                              ;
+;                         ; due to stuck port clock   ;                                                    ;
++-------------------------+---------------------------+----------------------------------------------------+
 
 
 +------------------------------------------------------+
@@ -290,14 +342,32 @@ Encoding Type:  One-Hot
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 0     ;
-; Number of registers using Synchronous Clear  ; 0     ;
-; Number of registers using Synchronous Load   ; 0     ;
-; Number of registers using Asynchronous Clear ; 0     ;
+; Total registers                              ; 4577  ;
+; Number of registers using Synchronous Clear  ; 122   ;
+; Number of registers using Synchronous Load   ; 16    ;
+; Number of registers using Asynchronous Clear ; 481   ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 0     ;
+; Number of registers using Clock Enable       ; 4399  ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------+
+; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                      ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------------+
+; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output            ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------------+
+; 3:1                ; 31 bits   ; 62 LEs        ; 0 LEs                ; 62 LEs                 ; Yes        ; |cpu|if_id:IF_ID|id_instr[1]          ;
+; 18:1               ; 16 bits   ; 192 LEs       ; 160 LEs              ; 32 LEs                 ; Yes        ; |cpu|id_ex:ID_EX|ex_reg_data2[11]     ;
+; 7:1                ; 8 bits    ; 32 LEs        ; 32 LEs               ; 0 LEs                  ; Yes        ; |cpu|pc:PC|pc_out[14]                 ;
+; 7:1                ; 8 bits    ; 32 LEs        ; 32 LEs               ; 0 LEs                  ; Yes        ; |cpu|pc:PC|pc_out[0]                  ;
+; 3:1                ; 16 bits   ; 32 LEs        ; 32 LEs               ; 0 LEs                  ; No         ; |cpu|wb_write_data[15]                ;
+; 3:1                ; 16 bits   ; 32 LEs        ; 32 LEs               ; 0 LEs                  ; No         ; |cpu|ex_forw_B[3]                     ;
+; 3:1                ; 16 bits   ; 32 LEs        ; 32 LEs               ; 0 LEs                  ; No         ; |cpu|alu_in1[4]                       ;
+; 8:1                ; 16 bits   ; 80 LEs        ; 64 LEs               ; 16 LEs                 ; No         ; |cpu|alu:ALU_I|Mux11                  ;
+; 16:1               ; 16 bits   ; 160 LEs       ; 160 LEs              ; 0 LEs                  ; No         ; |cpu|regfile:ID_REGFILE|Mux32         ;
+; 17:1               ; 16 bits   ; 176 LEs       ; 176 LEs              ; 0 LEs                  ; No         ; |cpu|regfile:ID_REGFILE|read_data1[9] ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------------+
 
 
 +---------------------------------------------------------------------+
@@ -437,6 +507,29 @@ Note: In order to hide this table in the UI and the text report file, please set
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
++----------------------------------------------------------------------------+
+; Parameter Settings for Inferred Entity Instance: alu:ALU_I|lpm_divide:Div0 ;
++------------------------+----------------+----------------------------------+
+; Parameter Name         ; Value          ; Type                             ;
++------------------------+----------------+----------------------------------+
+; LPM_WIDTHN             ; 16             ; Untyped                          ;
+; LPM_WIDTHD             ; 16             ; Untyped                          ;
+; LPM_NREPRESENTATION    ; UNSIGNED       ; Untyped                          ;
+; LPM_DREPRESENTATION    ; UNSIGNED       ; Untyped                          ;
+; LPM_PIPELINE           ; 0              ; Untyped                          ;
+; LPM_REMAINDERPOSITIVE  ; TRUE           ; Untyped                          ;
+; MAXIMIZE_SPEED         ; 5              ; Untyped                          ;
+; CBXI_PARAMETER         ; lpm_divide_7dm ; Untyped                          ;
+; CARRY_CHAIN            ; MANUAL         ; Untyped                          ;
+; OPTIMIZE_FOR_SPEED     ; 5              ; Untyped                          ;
+; AUTO_CARRY_CHAINS      ; ON             ; AUTO_CARRY                       ;
+; IGNORE_CARRY_BUFFERS   ; OFF            ; IGNORE_CARRY                     ;
+; AUTO_CASCADE_CHAINS    ; ON             ; AUTO_CASCADE                     ;
+; IGNORE_CASCADE_BUFFERS ; OFF            ; IGNORE_CASCADE                   ;
++------------------------+----------------+----------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
 +----------------------------------------------------------------------------------------------------------------------+
 ; Port Connectivity Checks: "ex_mem:EX_MEM"                                                                            ;
 +------------+--------+----------+-------------------------------------------------------------------------------------+
@@ -468,14 +561,39 @@ Note: In order to hide this table in the UI and the text report file, please set
 
 +-----------------------------------------------------+
 ; Post-Synthesis Netlist Statistics for Top Partition ;
-+-------------------+---------------------------------+
-; Type              ; Count                           ;
-+-------------------+---------------------------------+
-; boundary_port     ; 2                               ;
-;                   ;                                 ;
-; Max LUT depth     ; 0.00                            ;
-; Average LUT depth ; 0.00                            ;
-+-------------------+---------------------------------+
++-----------------------+-----------------------------+
+; Type                  ; Count                       ;
++-----------------------+-----------------------------+
+; arriav_ff             ; 4577                        ;
+;     CLR               ; 95                          ;
+;     CLR SCLR          ; 67                          ;
+;     CLR SCLR SLD      ; 16                          ;
+;     ENA               ; 4096                        ;
+;     ENA CLR           ; 264                         ;
+;     ENA CLR SCLR      ; 39                          ;
+; arriav_lcell_comb     ; 2519                        ;
+;     arith             ; 210                         ;
+;         0 data inputs ; 28                          ;
+;         1 data inputs ; 33                          ;
+;         5 data inputs ; 149                         ;
+;     extend            ; 4                           ;
+;         7 data inputs ; 4                           ;
+;     normal            ; 2300                        ;
+;         2 data inputs ; 24                          ;
+;         3 data inputs ; 19                          ;
+;         4 data inputs ; 378                         ;
+;         5 data inputs ; 143                         ;
+;         6 data inputs ; 1736                        ;
+;     shared            ; 5                           ;
+;         0 data inputs ; 2                           ;
+;         2 data inputs ; 2                           ;
+;         4 data inputs ; 1                           ;
+; arriav_mac            ; 1                           ;
+; boundary_port         ; 22                          ;
+;                       ;                             ;
+; Max LUT depth         ; 43.40                       ;
+; Average LUT depth     ; 8.12                        ;
++-----------------------+-----------------------------+
 
 
 +-------------------------------+
@@ -483,7 +601,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 +----------------+--------------+
 ; Partition Name ; Elapsed Time ;
 +----------------+--------------+
-; Top            ; 00:00:00     ;
+; Top            ; 00:00:09     ;
 +----------------+--------------+
 
 
@@ -493,10 +611,15 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 22.1std.0 Build 915 10/25/2022 SC Lite Edition
-    Info: Processing started: Mon May 26 18:13:09 2025
+    Info: Processing started: Mon May 26 19:31:24 2025
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off Verilog-RISC-V-CPU -c Verilog-RISC-V-CPU
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
+Info (12021): Found 2 design units, including 2 entities, in source file tls/binary_to_7seg.v
+    Info (12023): Found entity 1: binary_to_7Seg File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/binary_to_7Seg.v Line: 1
+    Info (12023): Found entity 2: dual_binary_to_7Seg File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/binary_to_7Seg.v Line: 30
+Info (12021): Found 1 design units, including 1 entities, in source file instatiate.v
+    Info (12023): Found entity 1: instatiate File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/instatiate.v Line: 1
 Info (12021): Found 1 design units, including 1 entities, in source file tls/tb_cpu.v
     Info (12023): Found entity 1: tb_cpu File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/tb_cpu.v Line: 3
 Info (12021): Found 1 design units, including 1 entities, in source file tls/fsm.v
@@ -529,76 +652,115 @@ Info (12021): Found 1 design units, including 1 entities, in source file bpc/pc.
     Info (12023): Found entity 1: pc File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/BPC/pc.v Line: 6
 Info (12021): Found 1 design units, including 1 entities, in source file alu/alu.v
     Info (12023): Found entity 1: alu File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/ALU/ALU.v Line: 7
-Warning (10236): Verilog HDL Implicit Net warning at cpu.v(219): created implicit net for "ex_is_str_reg_indirect" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 219
+Info (12021): Found 1 design units, including 1 entities, in source file bin2bcd16.v
+    Info (12023): Found entity 1: bin2bcd16 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/bin2bcd16.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file decoder.v
+    Info (12023): Found entity 1: decoder File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/decoder.v Line: 1
+Warning (10236): Verilog HDL Implicit Net warning at instatiate.v(14): created implicit net for "KEY0" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/instatiate.v Line: 14
+Warning (10236): Verilog HDL Implicit Net warning at instatiate.v(14): created implicit net for "KEY1" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/instatiate.v Line: 14
+Warning (10236): Verilog HDL Implicit Net warning at cpu.v(224): created implicit net for "ex_is_str_reg_indirect" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 224
 Info (12127): Elaborating entity "cpu" for the top level hierarchy
-Warning (10036): Verilog HDL or VHDL warning at cpu.v(78): object "is_jal" assigned a value but never read File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 78
-Warning (10036): Verilog HDL or VHDL warning at cpu.v(268): object "str_addr" assigned a value but never read File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 268
-Warning (10036): Verilog HDL or VHDL warning at cpu.v(284): object "alu_in2_reg" assigned a value but never read File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 284
-Warning (10230): Verilog HDL assignment warning at cpu.v(148): truncated value with size 32 to match size of target (16) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 148
-Warning (10230): Verilog HDL assignment warning at cpu.v(383): truncated value with size 32 to match size of target (16) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 383
-Info (10041): Inferred latch for "mem_read_data[0]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[1]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[2]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[3]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[4]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[5]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[6]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[7]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[8]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[9]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[10]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[11]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[12]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[13]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[14]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (10041): Inferred latch for "mem_read_data[15]" at cpu.v(354) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 354
-Info (12128): Elaborating entity "pc" for hierarchy "pc:PC" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 41
-Info (12128): Elaborating entity "instr_mem" for hierarchy "instr_mem:IMEM" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 51
+Warning (10036): Verilog HDL or VHDL warning at cpu.v(81): object "is_jal" assigned a value but never read File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 81
+Warning (10036): Verilog HDL or VHDL warning at cpu.v(273): object "str_addr" assigned a value but never read File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 273
+Warning (10036): Verilog HDL or VHDL warning at cpu.v(289): object "alu_in2_reg" assigned a value but never read File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 289
+Warning (10230): Verilog HDL assignment warning at cpu.v(153): truncated value with size 32 to match size of target (16) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 153
+Warning (10230): Verilog HDL assignment warning at cpu.v(387): truncated value with size 32 to match size of target (16) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 387
+Info (10041): Inferred latch for "mem_read_data[0]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[1]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[2]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[3]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[4]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[5]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[6]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[7]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[8]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[9]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[10]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[11]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[12]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[13]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[14]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (10041): Inferred latch for "mem_read_data[15]" at cpu.v(358) File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 358
+Info (12128): Elaborating entity "pc" for hierarchy "pc:PC" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 44
+Info (12128): Elaborating entity "instr_mem" for hierarchy "instr_mem:IMEM" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 54
 Warning (10030): Net "mem.data_a" at instr_mem.v(18) has no driver or initial value, using a default initial value '0' File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/instr_mem.v Line: 18
 Warning (10030): Net "mem.waddr_a" at instr_mem.v(18) has no driver or initial value, using a default initial value '0' File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/instr_mem.v Line: 18
 Warning (10030): Net "mem.we_a" at instr_mem.v(18) has no driver or initial value, using a default initial value '0' File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/instr_mem.v Line: 18
-Info (12128): Elaborating entity "if_id" for hierarchy "if_id:IF_ID" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 67
-Info (12128): Elaborating entity "imm_gen" for hierarchy "imm_gen:IMM_GEN" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 96
-Info (12128): Elaborating entity "fsm" for hierarchy "fsm:CONTROL" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 112
-Info (12128): Elaborating entity "regfile" for hierarchy "regfile:ID_REGFILE" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 144
-Info (10648): Verilog HDL Display System Task info at regfile.v(46): Final register file contents: File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 46
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r0 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r1 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r2 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r3 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r4 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r5 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r6 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r7 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r8 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r9 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r10 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r11 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r12 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r13 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r14 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (10648): Verilog HDL Display System Task info at regfile.v(48): r15 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 48
-Info (12128): Elaborating entity "id_ex" for hierarchy "id_ex:ID_EX" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 222
-Info (12128): Elaborating entity "hazard" for hierarchy "hazard:HAZARD_UNIT" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 240
-Info (12128): Elaborating entity "forward" for hierarchy "forward:FORWARD_UNIT" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 253
-Info (12128): Elaborating entity "alu" for hierarchy "alu:ALU_I" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 295
-Info (12128): Elaborating entity "ex_mem" for hierarchy "ex_mem:EX_MEM" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 333
-Info (12128): Elaborating entity "data_mem" for hierarchy "data_mem:DMEM" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 350
-Info (12128): Elaborating entity "mem_wb" for hierarchy "mem_wb:MEM_WB" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 380
+Info (12128): Elaborating entity "if_id" for hierarchy "if_id:IF_ID" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 70
+Info (12128): Elaborating entity "imm_gen" for hierarchy "imm_gen:IMM_GEN" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 99
+Info (12128): Elaborating entity "fsm" for hierarchy "fsm:CONTROL" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 115
+Info (12128): Elaborating entity "regfile" for hierarchy "regfile:ID_REGFILE" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 149
+Info (10648): Verilog HDL Display System Task info at regfile.v(53): Final register file contents: File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 53
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r0 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r1 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r2 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r3 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r4 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r5 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r6 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r7 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r8 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r9 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r10 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r11 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r12 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r13 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r14 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (10648): Verilog HDL Display System Task info at regfile.v(55): r15 = 0 File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/REG/regfile.v Line: 55
+Info (12128): Elaborating entity "id_ex" for hierarchy "id_ex:ID_EX" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 227
+Info (12128): Elaborating entity "hazard" for hierarchy "hazard:HAZARD_UNIT" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 245
+Info (12128): Elaborating entity "forward" for hierarchy "forward:FORWARD_UNIT" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 258
+Info (12128): Elaborating entity "alu" for hierarchy "alu:ALU_I" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 300
+Info (12128): Elaborating entity "ex_mem" for hierarchy "ex_mem:EX_MEM" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 338
+Info (12128): Elaborating entity "data_mem" for hierarchy "data_mem:DMEM" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 355
+Info (12128): Elaborating entity "mem_wb" for hierarchy "mem_wb:MEM_WB" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 384
+Info (276014): Found 1 instances of uninferred RAM logic
+    Info (276007): RAM logic "data_mem:DMEM|memory" is uninferred due to asynchronous read logic File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/IDM/data_mem.v Line: 20
+Warning (13046): Tri-state node(s) do not directly drive top-level pin(s)
+    Warning (13048): Converted tri-state node "mem_read_data[15]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[14]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[13]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[12]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[11]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[10]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[9]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[8]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[7]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node feeding "mem_wb:MEM_WB|wb_read_data[6]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[5]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[4]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[3]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[2]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[1]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+    Warning (13048): Converted tri-state node "mem_read_data[0]" into a selector File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/PIP/mem_wb.v Line: 40
+Info (278001): Inferred 1 megafunctions from design logic
+    Info (278004): Inferred divider/modulo megafunction ("lpm_divide") from the following logic: "alu:ALU_I|Div0" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/ALU/ALU.v Line: 26
+Info (12130): Elaborated megafunction instantiation "alu:ALU_I|lpm_divide:Div0" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/ALU/ALU.v Line: 26
+Info (12133): Instantiated megafunction "alu:ALU_I|lpm_divide:Div0" with the following parameter: File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/ALU/ALU.v Line: 26
+    Info (12134): Parameter "LPM_WIDTHN" = "16"
+    Info (12134): Parameter "LPM_WIDTHD" = "16"
+    Info (12134): Parameter "LPM_NREPRESENTATION" = "UNSIGNED"
+    Info (12134): Parameter "LPM_DREPRESENTATION" = "UNSIGNED"
+Info (12021): Found 1 design units, including 1 entities, in source file db/lpm_divide_7dm.tdf
+    Info (12023): Found entity 1: lpm_divide_7dm File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/db/lpm_divide_7dm.tdf Line: 25
+Info (12021): Found 1 design units, including 1 entities, in source file db/sign_div_unsign_dnh.tdf
+    Info (12023): Found entity 1: sign_div_unsign_dnh File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/db/sign_div_unsign_dnh.tdf Line: 25
+Info (12021): Found 1 design units, including 1 entities, in source file db/alt_u_div_03f.tdf
+    Info (12023): Found entity 1: alt_u_div_03f File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/db/alt_u_div_03f.tdf Line: 23
 Warning (12241): 1 hierarchies have connectivity warnings - see the Connectivity Checks report folder
+Info (286030): Timing-Driven Synthesis is running
 Info (17049): 6 registers lost all their fanouts during netlist optimizations.
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Warning (21074): Design contains 2 input pin(s) that do not drive logic
-    Warning (15610): No output dependent on input pin "clk" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 14
-    Warning (15610): No output dependent on input pin "reset" File: C:/Users/Serena Li/Desktop/Verilog-RISC-V-CPU/TLS/cpu.v Line: 16
-Info (21057): Implemented 2 device resources after synthesis - the final resource count might be different
-    Info (21058): Implemented 2 input pins
-    Info (21059): Implemented 0 output pins
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 14 warnings
-    Info: Peak virtual memory: 4828 megabytes
-    Info: Processing ended: Mon May 26 18:13:17 2025
-    Info: Elapsed time: 00:00:08
-    Info: Total CPU time (on all processors): 00:00:18
+Info (21057): Implemented 7032 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 6 input pins
+    Info (21059): Implemented 16 output pins
+    Info (21061): Implemented 7009 logic cells
+    Info (21062): Implemented 1 DSP elements
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 30 warnings
+    Info: Peak virtual memory: 4911 megabytes
+    Info: Processing ended: Mon May 26 19:31:45 2025
+    Info: Elapsed time: 00:00:21
+    Info: Total CPU time (on all processors): 00:00:34
 
 
