@@ -1,36 +1,41 @@
-// Functional opcodes: ADD, SUB, XOR, LDI (load data immediate), JMP (jump/goto), BEQZ (branch if equals zero), HALT, STR (store), AND, LOAD, MOV (move), JAL, JR, MUL
-// Registers:
-//   R0 = F[n-1]
-//   R1 = F[n]
-//   R2 = F[n+1] (temporary next value)
-//   R3 = 0       (constant zero)
-//   R4 = memory address pointer
-//   R5 = loop counter (how many more fibs to do)
-//   R6 = 1
+# Functional opcodes: ADD, SUB, XOR, LDI (load data immediate), JMP (jump/goto), BEQZ (branch if equals zero), HALT, STR (store), AND, LOAD, MOV (move), JAL, JR, MUL
+# Registers:
+#   R0 = F[n-1]
+#   R1 = F[n]
+#   R2 = F[n+1] (temporary next value)
+#   R3 = 0       (constant zero)
+#   R4 = memory address pointer
+#   R5 = loop counter (how many more fibs to do)
+#   R6 = 1
 
-    // Load initial values
-    LDI R0, #0      // F[0] = 0
-    LDI R1, #1      // F[1] = 1
-    LDI R2, #0      // temp
-    LDI R3, #0      // zero constant
-    LDI R4, #1      // R4 = memory address pointer
-    LDI R5, #25     // number of loops to do
-    LDI R6, #1      // decrement amount
+.alias FN1 R0      // F[n-1]
+.alias FN  R1      // F[n]
+.alias FN2 R2      // F[n+1] (temp)
+.alias ZERO R3     // constant zero
+.alias ADDR R4     // memory address pointer
+.alias COUNT R5    // loop counter
+.alias ONE R6      // constant one
+.alias MEM R8      // memory base pointer
+.alias TMP R9      // temp register
+
+# Load initial values
+LDI FN1, 0      # F[0] = 0
+LDI FN, 1       # F[1] = 1
+
+LDI FN2, 0      # temp
+LDI ZERO, 0     # zero constant
+LDI ADDR, 1     # memory address pointer
+LDI COUNT, 25   # number of loops to do
+LDI ONE, 1      # decrement amount
+ADD TMP, TMP, ONE
 
 LOOP:
-    // store current F[n] (R1) to memory at address R4
-    STR  R0, R4
-    // compute next = R0 + R1
-    ADD  R2, R0, R1
 
-    // increment address pointer
-    ADD  R4, R4, R6
-
-    // shift window
-    MOV  R0, R1  // R0 ← old R1
-    MOV  R1, R2  // R1 ← new R2
-
-    // decrement & maybe finish
-    SUB  R5, R5, R6
-    BNE LOOP
+STR FN1, MEM              # store current F[n-1] to memory at address MEM
+ADD FN2, FN1, FN          # compute next = FN1 + FN
+ADD ADDR, ADDR, ONE       # increment address pointer
+MOV FN1, FN               # FN1 ← old FN
+MOV FN, FN2               # FN ← new FN2
+SUB COUNT, COUNT, ONE     # decrement loop counter
+BNE LOOP                  # branch if not zero
 HALT
