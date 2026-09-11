@@ -8,8 +8,9 @@
 # ---------------------------------------------------------------------------
 IVERILOG ?= iverilog
 VVP      ?= vvp
-PYTHON   ?= python3
+PYTHON   ?= $(shell [ -x /usr/bin/python3 ] && echo /usr/bin/python3 || echo python3)
 ASM      := $(PYTHON) sw/assembler/rv32asm.py
+CC       := $(PYTHON) sw/compiler/rvcc.py
 SRCLIST  := sim/files.f
 VFLAGS   := -g2012 -I rtl/periph -s tb_soc -c $(SRCLIST)
 
@@ -18,7 +19,7 @@ TESTDIR  := sw/tests
 RTLSRCS  := $(shell find rtl -name '*.v')
 
 # Tests as <name>:<num_cores>
-TESTS_1 := core_test:1 uart_hello:1 eth_loopback:1
+TESTS_1 := core_test:1 uart_hello:1 eth_loopback:1 c_arith:1 hello_uart:1
 TESTS_4 := multicore_lock:4
 
 HEX1   := $(foreach t,$(TESTS_1),$(TESTDIR)/$(word 1,$(subst :, ,$t)).rom.hex)
@@ -37,9 +38,12 @@ $(SIMDIR)/tb4.vvp: $(SRCLIST) tb/tb_soc.v $(RTLSRCS)
 	@mkdir -p $(SIMDIR)
 	$(IVERILOG) $(VFLAGS) -P tb_soc.NUM_CORES=4 -o $@
 
-# ---- assemble programs (.S -> .rom.hex + .ram.hex) ----
+# ---- assemble / compile programs (.S/.c -> .rom.hex + .ram.hex) ----
 $(TESTDIR)/%.rom.hex: $(TESTDIR)/%.S sw/assembler/rv32asm.py
 	$(ASM) $< -o $@ --ram $(@:.rom.hex=.ram.hex)
+
+$(TESTDIR)/%.rom.hex: $(TESTDIR)/%.c sw/compiler/rvcc.py sw/assembler/rv32asm.py
+	$(CC) $< --rom $@ --ram $(@:.rom.hex=.ram.hex)
 
 # ---- run the full regression ----
 test: $(SIMDIR)/tb1.vvp $(SIMDIR)/tb4.vvp $(ALLHEX)

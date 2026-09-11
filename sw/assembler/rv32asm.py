@@ -578,13 +578,20 @@ def main():
                 b = decode_string(rest) + ([0] if name == ".asciz" else [])
                 loc[region] += len(b); continue
             continue
-        # instruction: determine size (most are 4 bytes; li/la may be 8)
+        # instruction: determine size (most are 4 bytes; li may be 4 or 8)
         parts = re.split(r"[\s,]+", code, maxsplit=1)
         mnem = parts[0].lower()
         ops = split_ops(code[len(parts[0]):].strip()) if len(code) > len(parts[0]) else []
-        size = 4
-        if mnem in ("li", "la", "call"):
-            size = 8  # may expand to two instructions
+        if mnem == "li":
+            try:
+                _v = asm.resolve(ops[1]) & 0xFFFFFFFF
+                size = 4 * len(expand_li(reg_safe(ops[0]), _v))
+            except Exception:
+                size = 8
+        elif mnem in ("la", "call"):
+            size = 8
+        else:
+            size = 4
         loc[region] += size
 
     # ---- Pass 2: emit bytes/words ----
@@ -676,11 +683,7 @@ def main():
             words = expand_li(reg_safe(ops[0]), asm.resolve(ops[1]) & 0xFFFFFFFF)
             for i, w in enumerate(words):
                 put_word(pc + 4 * i, w)
-            loc[region] += 4 * max(len(words), 1)
-            # pad reserved size (8) if only one instruction
-            if len(words) == 1:
-                put_word(pc + 4, NOP)
-                loc[region] += 4
+            loc[region] += 4 * len(words)
             continue
         if mnem == "la":
             words = expand_la(reg_safe(ops[0]), asm.resolve(ops[1]) & 0xFFFFFFFF)

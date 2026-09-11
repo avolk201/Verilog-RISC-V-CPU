@@ -24,10 +24,10 @@ included, so **no external RISC-V toolchain is required**.
   single-beat AMOs are atomic across masters.
 - **Peripherals** — 16550-style **UART** (real serial TX/RX), **Ethernet MAC**
   (GMII-style framing with CRC-32), **CLINT** (timer + software IPIs).
-- **Self-contained toolchain** — a Python RV32IMAC assembler emits ROM/RAM hex
-  images directly.
+- **Self-contained toolchain** — a Python RV32IMAC assembler (`rv32asm.py`) and
+  a rudimentary C compiler (`rvcc.py`) compile and emit ROM/RAM hex images directly.
 - **Self-checking regression** — `make test` runs every demo and reports
-  PASS/FAIL; the UART demo echoes to the console.
+  PASS/FAIL; the UART demos echo to the console.
 
 ```
                 +-----------------------------------------------+
@@ -63,10 +63,12 @@ Expected output:
 
 ```
 ================ RV32 SoC regression ================
-[  PASSED  ] sw/tests/core_test.rom.hex  (cores=1, 233 cycles)
-[  PASSED  ] sw/tests/uart_hello.rom.hex  (cores=1, 1881 cycles)
-[  PASSED  ] sw/tests/eth_loopback.rom.hex  (cores=1, 517 cycles)
-[  PASSED  ] sw/tests/multicore_lock.rom.hex  (cores=4, 2232 cycles)
+[  PASSED  ] sw/tests/core_test.rom.hex  (cores=1, 197 cycles)
+[  PASSED  ] sw/tests/uart_hello.rom.hex  (cores=1, 1878 cycles)
+[  PASSED  ] sw/tests/eth_loopback.rom.hex  (cores=1, 511 cycles)
+[  PASSED  ] sw/tests/c_arith.rom.hex  (cores=1, 11129 cycles)
+[  PASSED  ] sw/tests/hello_uart.rom.hex  (cores=1, 7574 cycles)
+[  PASSED  ] sw/tests/multicore_lock.rom.hex  (cores=4, 2423 cycles)
 =====================================================
 ALL TESTS PASSED
 ```
@@ -92,6 +94,11 @@ Waveforms are dumped to `sim/dump.vcd` (`make waves`).
 | `multicore_lock.S` | 4 | **SMP correctness**: 4 harts concurrently increment a shared counter under an `AMOSWAP` spinlock; the result is exactly `NCORES*ITER` (no lost updates). |
 | `uart_hello.S` | 1 | UART transmit + loopback receive of a string; the testbench decodes the serial line and echoes `RV32 SoC UART OK`. |
 | `eth_loopback.S` | 1 | Ethernet MAC builds a framed packet with CRC-32, transmits over GMII, receives it back through loopback, validates CRC, and byte-compares. |
+| `c_arith.c` | 1 | **Single-core C compiler**: functions, recursion (`fib`, `gcd`), local arrays, pointer passing, array manipulation, relational comparisons (`<`, `<=`, `>`, `>=`), loops, and control flow. |
+| `hello_uart.c` | 1 | **C peripheral driver**: UART programming and polled string transmission with loopback reception entirely from C. |
+
+> [!NOTE]
+> **Multi-core C status**: Multi-core hardware SMP is fully verified in assembly (`multicore_lock.S`). Multi-core C code generation is currently work-in-progress (WIP) due to stack contention under heavy bus traffic, so the verified C demos currently run single-core.
 
 Each program writes a result code to the `tohost` word in shared SRAM
 (`0x8001FFF0`); the testbench polls it and reports PASS/FAIL.
@@ -110,7 +117,8 @@ rtl/
   soc/          soc_top.v                    (N cores + bus + slaves)
 sw/
   assembler/    rv32asm.py                   (RV32IMAC assembler)
-  tests/        *.S                          (demo programs)
+  compiler/     rvcc.py                      (rudimentary C compiler)
+  tests/        *.S, *.c                     (demo programs)
 tb/
   tb_soc.v      self-checking SoC testbench (UART echo + GMII loopback)
   tb_uart.v     UART unit testbench
