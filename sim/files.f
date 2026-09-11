@@ -1,0 +1,14 @@
+rtl/core/rv32_alu.v
+rtl/core/rv32_regfile.v
+rtl/core/rv32_immgen.v
+rtl/core/rv32_decoder.v
+rtl/core/rv32_csr.v
+rtl/core/rv32_core.v
+rtl/mem/boot_rom.v
+rtl/mem/sram.v
+rtl/interconnect/soc_bus.v
+rtl/periph/clint.v
+rtl/periph/uart.v
+rtl/periph/eth_mac.v
+rtl/soc/soc_top.v
+tb/tb_soc.v

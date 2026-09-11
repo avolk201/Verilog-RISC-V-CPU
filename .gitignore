@@ -1,3 +1,28 @@
-
-*.vcd
+# Simulation artifacts
+sim/*.vvp
+sim/*.vcd
+sim/*.fst
+sim/*.out
+sim/*.hex
 *.vvp
+*.vcd
+*.fst
+
+# Generated memory images (kept sources in sw/)
+sw/tests/*.hex
+!sw/tests/*.expected.hex
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor / OS
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# Vendor build outputs
+*.log
+build/
+.Xil/
