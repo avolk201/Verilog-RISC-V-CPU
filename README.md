@@ -154,15 +154,6 @@ implemented in the SRAM controller: because the arbiter grants one master per
 single-beat transaction, an `AMO*` read-modify-write is indivisible. `LR/SC` use
 a global reservation register keyed by `(master-id, address)` that is cleared by
 any intervening write — giving correct store-conditional semantics across cores.
-
-### On the original project
-This is a **fork/rewrite** of `avolk201/Verilog-RISC-V-CPU`. The original
-implemented a custom 16-bit ISA with several structural bugs (multiple drivers on
-memory buses, ID-stage memory addressing, branch resolution against the wrong
-zero flag, dead control FSM). Those were superseded by a standards-based RV32
-core and a real SoC. The upstream repository is wired as the `upstream` git
-remote for attribution and history.
-
 ---
 
 ## Status & scope
