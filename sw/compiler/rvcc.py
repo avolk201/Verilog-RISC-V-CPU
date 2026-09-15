@@ -526,7 +526,8 @@ class Parser:
 # Code generator
 # --------------------------------------------------------------------------
 class CodeGen:
-    def __init__(self, funcs, globals_):
+    def __init__(self, funcs, globals_, rv32e=False):
+        self.rv32e = rv32e
         self.out = []
         self.funcs = {f[2]: f for f in funcs}
         self.func_order = [f[2] for f in funcs]
@@ -538,18 +539,28 @@ class CodeGen:
         self.strings = []      # list of byte-lists
         self.lbl = 0
         self.INTRINSICS = {"hartid", "amoswap", "amoadd", "membar"}
+        self.tmp_regs = ["t3", "t4", "t5", "t6", "a3", "a4", "a5", "a6", "a7"]
+        self.reg_sp = 0
 
     # ---- helpers ----
     def emit(self, s):
         self.out.append("    " + s)
 
     def push(self, reg="a0"):
-        self.emit("addi sp, sp, -4")
-        self.emit(f"sw {reg}, 0(sp)")
+        if self.reg_sp < len(self.tmp_regs):
+            self.emit(f"mv {self.tmp_regs[self.reg_sp]}, {reg}")
+            self.reg_sp += 1
+        else:
+            self.emit("addi sp, sp, -4")
+            self.emit(f"sw {reg}, 0(sp)")
 
     def pop(self, reg="a0"):
-        self.emit(f"lw {reg}, 0(sp)")
-        self.emit("addi sp, sp, 4")
+        if self.reg_sp > 0:
+            self.reg_sp -= 1
+            self.emit(f"mv {reg}, {self.tmp_regs[self.reg_sp]}")
+        else:
+            self.emit(f"lw {reg}, 0(sp)")
+            self.emit("addi sp, sp, 4")
 
     def label(self, prefix="L"):
         self.lbl += 1
@@ -588,16 +599,22 @@ class CodeGen:
 
     def startup(self):
         # per-hart stack; call main; hart 0 reports the result to `tohost`
-        self.emit("csrr t0, mhartid")
-        self.emit("li   t1, 4096")
-        self.emit("mul  t2, t0, t1")
-        self.emit("la   sp, __stack_top")
-        self.emit("sub  sp, sp, t2")
-        self.emit("jal  ra, main")
-        self.emit("csrr t0, mhartid")
-        self.emit("bnez t0, __park")
-        self.emit("la   t1, __tohost")
-        self.emit("beqz a0, __ok")
+        if self.rv32e:
+            self.emit("la   sp, __stack_top")
+            self.emit("jal  ra, main")
+            self.emit("la   t1, __tohost")
+            self.emit("beqz a0, __ok")
+        else:
+            self.emit("csrr t0, mhartid")
+            self.emit("li   t1, 4096")
+            self.emit("mul  t2, t0, t1")
+            self.emit("la   sp, __stack_top")
+            self.emit("sub  sp, sp, t2")
+            self.emit("jal  ra, main")
+            self.emit("csrr t0, mhartid")
+            self.emit("bnez t0, __park")
+            self.emit("la   t1, __tohost")
+            self.emit("beqz a0, __ok")
         self.emit("li   t2, 0xBAD00000")
         self.emit("or   a0, a0, t2")
         self.emit("sw   a0, 0(t1)")
@@ -866,8 +883,8 @@ class CodeGen:
         self.gen(i, locals_)                  # a0 = index
         esz = tsize(base_type)
         if esz != 1:
-            self.emit(f"li t3, {esz}")
-            self.emit("mul a0, a0, t3")
+            self.emit(f"li a2, {esz}")
+            self.emit("mul a0, a0, a2")
         self.emit("add a0, t2, a0")           # a0 = element address
         self.emit_load(base_type, "a0", "a0")
         return base_type
@@ -919,15 +936,15 @@ class CodeGen:
         if op in ("+", "-") and lt and lt["k"] == "ptr":
             esz = tsize(lt["to"])
             if esz != 1:
-                self.emit(f"li t3, {esz}")
-                self.emit("mul t1, t1, t3")
+                self.emit(f"li a2, {esz}")
+                self.emit("mul t1, t1, a2")
             self.emit(("add a0, t0, t1") if op == "+" else ("sub a0, t0, t1"))
             return lt
         if op == "-" and lt and lt["k"] == "ptr" and rt and rt["k"] == "ptr":
             self.emit("sub a0, t0, t1")
             esz = tsize(lt["to"])
             if esz != 1:
-                self.emit(f"li t3, {esz}"); self.emit("div a0, a0, t3")
+                self.emit(f"li a2, {esz}"); self.emit("div a0, a0, a2")
             return INT
         # scalar arithmetic / logic
         if op == "+":
@@ -1029,7 +1046,7 @@ class CodeGen:
             self.gen(n[2], locals_)
             esz = tsize(base_type)
             if esz != 1:
-                self.emit(f"li t3, {esz}"); self.emit("mul a0, a0, t3")
+                self.emit(f"li a2, {esz}"); self.emit("mul a0, a0, a2")
             self.emit("add a0, t2, a0")
             return
         raise CError("invalid lvalue")
@@ -1037,7 +1054,11 @@ class CodeGen:
     def gen_call(self, name, args, locals_):
         # intrinsics
         if name == "hartid":
-            self.emit("csrr a0, mhartid"); return INT
+            if self.rv32e:
+                self.emit("li a0, 0")
+            else:
+                self.emit("csrr a0, mhartid")
+            return INT
         if name == "membar":
             self.emit("nop"); return VOID
         if name in ("amoswap", "amoadd"):
@@ -1054,6 +1075,13 @@ class CodeGen:
             raise CError(f"call to undefined function '{name}'")
         f = self.funcs[name]
         retty = f[1]
+        
+        # Save live tmp_regs to memory stack
+        n_saved = self.reg_sp
+        for i in range(n_saved):
+            self.emit("addi sp, sp, -4")
+            self.emit(f"sw {self.tmp_regs[i]}, 0(sp)")
+
         # push args right-to-left
         for a in reversed(args):
             self.gen(a, locals_)
@@ -1062,6 +1090,12 @@ class CodeGen:
         self.emit(f"jal ra, {name}")
         if args:
             self.emit(f"addi sp, sp, {4*len(args)}")
+            
+        # Restore tmp_regs
+        for i in reversed(range(n_saved)):
+            self.emit(f"lw {self.tmp_regs[i]}, 0(sp)")
+            self.emit("addi sp, sp, 4")
+            
         return retty
 
     # ---- type inference (no codegen) ----
@@ -1137,12 +1171,12 @@ def const_value(e):
 # --------------------------------------------------------------------------
 # Driver
 # --------------------------------------------------------------------------
-def compile_c(src_text, base_dir):
+def compile_c(src_text, base_dir, rv32e=False):
     text, macros = preprocess(src_text, base_dir)
     lx = Lexer(text, macros)
     p = Parser(lx)
     funcs, globals_ = p.parse()
-    cg = CodeGen(funcs, globals_)
+    cg = CodeGen(funcs, globals_, rv32e)
     return cg.generate()
 
 
@@ -1153,13 +1187,14 @@ def main():
     ap.add_argument("--rom", default=None, help="also assemble -> ROM hex")
     ap.add_argument("--ram", default=None, help="also assemble -> RAM hex")
     ap.add_argument("--keep-asm", action="store_true")
+    ap.add_argument("--rv32e", action="store_true", help="Compile for RV32E (no CSRs, 16 regs)")
     args = ap.parse_args()
 
     base_dir = os.path.dirname(os.path.abspath(args.src))
     with open(args.src) as f:
         src = f.read()
     try:
-        asm_text = compile_c(src, base_dir)
+        asm_text = compile_c(src, base_dir, rv32e=args.rv32e)
     except CError as e:
         sys.exit(f"rvcc: {e}")
 

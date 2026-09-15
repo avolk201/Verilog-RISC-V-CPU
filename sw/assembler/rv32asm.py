@@ -68,6 +68,7 @@ OP_OP     = 0b0110011
 OP_MISC   = 0b0001111
 OP_SYSTEM = 0b1110011
 OP_AMO    = 0b0101111
+OP_CUSTOM_0 = 0b0001011
 
 
 class AsmError(Exception):
@@ -283,6 +284,14 @@ class Assembler:
         if m in op_r:
             f7, f3 = op_r[m]
             return r_type(f7, reg(o[2]), reg(o[1]), f3, reg(o[0]), OP_OP)
+        
+        op_custom = {
+            "fmul16": (0b0000001, 0b000),
+            "dotp8": (0b0000001, 0b001),
+        }
+        if m in op_custom:
+            f7, f3 = op_custom[m]
+            return r_type(f7, reg(o[2]), reg(o[1]), f3, reg(o[0]), OP_CUSTOM_0)
         op_m = {
             "mul": 0b000, "mulh": 0b001, "mulhsu": 0b010, "mulhu": 0b011,
             "div": 0b100, "divu": 0b101, "rem": 0b110, "remu": 0b111,

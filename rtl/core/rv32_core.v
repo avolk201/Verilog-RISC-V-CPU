@@ -210,7 +210,7 @@ module rv32_core #(
     wire [31:0] ex_target = idex_is_jalr ? ((ex_opA + idex_imm) & ~32'b1)
                                          : (idex_pc + idex_imm);
     wire ex_branch_taken = idex_valid &
-        (idex_is_jal | idex_is_jalr | (idex_is_branch & branch_cond));
+        (idex_is_jal | idex_is_jalr | (idex_is_branch & branch_cond)) & ~stall_mem;
 
     wire [31:0] ex_addr = idex_is_amo ? ex_opA : alu_result; // memory address
 
@@ -278,7 +278,7 @@ module rv32_core #(
     wire do_mret       = idex_valid & idex_is_mret & ~stall_mem;
 
     wire squash_ex_mem = take_trap_now | do_mret;
-    wire flush_id_ex   = ex_branch_taken | take_trap_now | do_mret | loaduse_stall;
+    wire flush_id_ex   = ex_branch_taken | take_trap_now | do_mret | (loaduse_stall & ~stall_mem);
     wire flush_if_id   = ex_branch_taken | take_trap_now | do_mret;
 
     reg [31:0] pc_next;
@@ -381,6 +381,9 @@ module rv32_core #(
                 idex_is_wfi      <= d_is_wfi;
                 idex_illegal     <= id_illegal;
                 idex_funct3      <= ifid_instr[14:12];
+            end else begin
+                idex_rs1val <= ex_opA;
+                idex_rs2val <= ex_opB;
             end
 
             // ---- EX/MEM ----
@@ -461,4 +464,10 @@ module rv32_core #(
     );
 
     assign core_busy = pc_en | d_cyc | idex_valid | exmem_valid | memwb_valid;
+
+    always @(posedge clk) begin
+        if (idex_valid && !freeze) begin
+            $display("PC=%x instr=%x alu_op=%d a=%x b=%x result=%x d_cyc=%d", idex_pc, idex_imm, idex_alu_op, alu_a, alu_b, alu_result, d_cyc);
+        end
+    end
 endmodule

@@ -12,6 +12,7 @@
 //-----------------------------------------------------------------------------
 `timescale 1ns/1ps
 
+/* verilator lint_off WIDTHTRUNC */
 module clint #(
     parameter NUM_HARTS = 2
 ) (
@@ -66,11 +67,13 @@ module clint #(
         end
     end
 
+    integer j;
     // ---- write / tick ----
     always @(posedge clk) begin
         if (rst) begin
             mtime <= 64'b0;
             msip  <= {NUM_HARTS{1'b0}};
+            for (j = 0; j < NUM_HARTS; j = j + 1) mtimecmp[j] <= 64'hFFFFFFFF_FFFFFFFF;
         end else begin
             mtime <= mtime + 64'd1;
             if (s_cyc & s_we) begin
@@ -93,3 +96,4 @@ module clint #(
         end
     endgenerate
 endmodule
+/* verilator lint_on WIDTHTRUNC */

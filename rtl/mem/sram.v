@@ -47,7 +47,12 @@ module sram #(
     end
 
     wire [AW-1:0] waddr = s_addr[AW+1:2];
-    wire [31:0]   cur   = mem[waddr];
+
+    reg [31:0] dout;
+    always @(posedge clk) begin
+        dout <= mem[waddr];
+    end
+    wire [31:0] cur = dout; // available 1 cycle after address is presented
 
     // ---- reservation register ----
     reg          res_valid;
@@ -59,7 +64,7 @@ module sram #(
     // ---- byte-lane merge for normal stores ----
     reg [31:0] merged;
     always @(*) begin
-        merged = cur;
+        merged = cur; // for partial writes, we need cur! Wait, this means partial writes take 2 cycles.
         if (s_be[0]) merged[7:0]   = s_wdata[7:0];
         if (s_be[1]) merged[15:8]  = s_wdata[15:8];
         if (s_be[2]) merged[23:16] = s_wdata[23:16];
@@ -83,32 +88,62 @@ module sram #(
         endcase
     end
 
-    // single-cycle acknowledge whenever selected
-    assign s_ack = s_cyc;
+    reg [1:0] state;
+    reg ack_q;
+    assign s_ack = ack_q;
 
-    // ---- read data mux (combinational) ----
-    always @(*) begin
-        if (s_amo == AMO_SC) s_rdata = sc_ok ? 32'd0 : 32'd1;  // 0 = success
-        else                 s_rdata = cur;                     // load / LR / AMO old
-    end
+    reg [31:0] s_rdata_reg;
+    assign s_rdata = s_rdata_reg;
 
-    // ---- synchronous write / reservation update ----
     always @(posedge clk) begin
-        if (s_cyc) begin
-            if (s_amo == AMO_LR) begin
-                res_valid  <= 1'b1;
-                res_master <= s_master;
-                res_addr   <= waddr;
-            end else if (s_amo == AMO_SC) begin
-                if (sc_ok) mem[waddr] <= s_wdata;
-                res_valid  <= 1'b0;                 // SC clears reservation
-            end else if (s_amo != AMO_NONE) begin   // arithmetic AMO
-                mem[waddr] <= amo_result;
-                if (res_valid & (res_addr == waddr)) res_valid <= 1'b0;
-            end else if (s_we) begin                // normal store
-                mem[waddr] <= merged;
-                if (res_valid & (res_addr == waddr)) res_valid <= 1'b0;
+        if (!s_cyc) begin
+            state <= 0;
+            ack_q <= 0;
+        end else if (ack_q) begin
+            // Transaction acknowledged. If s_cyc is still high, it's a new transaction!
+            // But to process it, we go back to state 0.
+            state <= 0;
+            ack_q <= 0;
+        end else begin
+            if (state == 0) begin
+                if (s_amo != AMO_NONE) begin
+                    state <= 1;
+                end else begin
+                    if (s_we) begin
+                        if (s_be[0]) mem[waddr][7:0]   <= s_wdata[7:0];
+                        if (s_be[1]) mem[waddr][15:8]  <= s_wdata[15:8];
+                        if (s_be[2]) mem[waddr][23:16] <= s_wdata[23:16];
+                        if (s_be[3]) mem[waddr][31:24] <= s_wdata[31:24];
+                        if (res_valid & (res_addr == waddr)) res_valid <= 1'b0;
+                    end
+                    state <= 1;
+                end
+            end else if (state == 1) begin
+                if (s_amo != AMO_NONE) begin
+                    if (s_amo == AMO_LR) begin
+                        res_valid  <= 1'b1;
+                        res_master <= s_master;
+                        res_addr   <= waddr;
+                    end else if (s_amo == AMO_SC) begin
+                        if (sc_ok) mem[waddr] <= s_wdata;
+                        res_valid  <= 1'b0;
+                    end else begin
+                        mem[waddr] <= amo_result;
+                        if (res_valid & (res_addr == waddr)) res_valid <= 1'b0;
+                    end
+                    s_rdata_reg <= (s_amo == AMO_SC) ? (sc_ok ? 32'd0 : 32'd1) : cur;
+                    ack_q <= 1'b1;
+                end else begin
+                    s_rdata_reg <= cur;
+                    ack_q <= 1'b1;
+                end
             end
+        end
+    end
+    
+    always @(posedge clk) begin
+        if (s_cyc && ack_q) begin
+            $display("SRAM: cyc=%d we=%d addr=%x wdata=%x be=%x rdata=%x", s_cyc, s_we, waddr, s_wdata, s_be, s_rdata);
         end
     end
 endmodule

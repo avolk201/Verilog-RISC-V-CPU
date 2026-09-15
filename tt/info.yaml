@@ -1,0 +1,42 @@
+# Tiny Tapeout project configuration
+project:
+  title:        "Tiny Silicon Computer — RV32E with SPI XIP, PSRAM, VGA, Audio & USB"
+  author:       "Alana Volkov"
+  discord:      ""
+  description:  "Self-contained RV32E retro computer: external SPI Flash XIP, 8MB QSPI PSRAM, hardware 640x480 VGA, chiptune PWM audio, Doom fmul16 accelerator, and USB KBM/XInput gamepad support."
+  language:     "Verilog"
+  clock_hz:     25175000   # Standard 25.175 MHz VGA pixel clock (compatible with 25-50 MHz)
+  tiles:        "3x2"      # Standard 3x2 tile allocation (~480 um x 200 um on Sky130)
+  top_module:   "tt_um_tiny_rv32"
+
+# Pinout mapping
+pinout:
+  # Dedicated inputs (ui_in)
+  ui[0]: "UART RX / XInput Host Stream"
+  ui[1]: "USB D- (Direct Low-Speed USB)"
+  ui[2]: "Gamepad Button UP (active-low / pull-up)"
+  ui[3]: "Gamepad Button DOWN (active-low / pull-up)"
+  ui[4]: "Gamepad Button LEFT (active-low / pull-up)"
+  ui[5]: "Gamepad Button RIGHT (active-low / pull-up)"
+  ui[6]: "Gamepad Button ACTION / FIRE (active-low / pull-up)"
+  ui[7]: "Boot Mode Select (0=SPI Flash XIP, 1=UART Bootloader)"
+
+  # Dedicated outputs (uo_out) -> Plugs directly into Tiny Tapeout VGA Pmod
+  uo[0]: "VGA Red 0 (LSB)"
+  uo[1]: "VGA Red 1 (MSB)"
+  uo[2]: "VGA Green 0 (LSB)"
+  uo[3]: "VGA Green 1 (MSB)"
+  uo[4]: "VGA Blue 0 (LSB)"
+  uo[5]: "VGA Blue 1 (MSB)"
+  uo[6]: "VGA HSYNC"
+  uo[7]: "VGA VSYNC"
+
+  # Bidirectional I/Os (uio)
+  uio[0]: "SPI SCLK (Flash + PSRAM)"
+  uio[1]: "SPI Flash CS# (active-low)"
+  uio[2]: "SPI MOSI (Flash + PSRAM)"
+  uio[3]: "SPI MISO (Flash + PSRAM)"
+  uio[4]: "SPI PSRAM CS# (active-low, 8MB RAM)"
+  uio[5]: "USB D+ (Direct Low-Speed USB)"
+  uio[6]: "Audio PWM Output (to Speaker Pmod)"
+  uio[7]: "Heartbeat / Status LED"
