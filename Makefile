@@ -7,10 +7,11 @@
 #   make waves   run the core test and keep a VCD for inspection
 # ---------------------------------------------------------------------------
 IVERILOG ?= iverilog
+TOOLCHAIN_DIR ?= ../rv32-toolchain
 VVP      ?= vvp
 PYTHON   ?= $(shell [ -x /usr/bin/python3 ] && echo /usr/bin/python3 || echo python3)
-ASM      := $(PYTHON) sw/assembler/rv32asm.py
-CC       := $(PYTHON) sw/compiler/rvcc.py
+ASM      := $(PYTHON) $(TOOLCHAIN_DIR)/assembler/rv32asm.py
+CC       := $(PYTHON) $(TOOLCHAIN_DIR)/compiler/rvcc.py
 SRCLIST  := sim/files.f
 VFLAGS   := -g2012 -I rtl/periph -s tb_soc -c $(SRCLIST)
 
